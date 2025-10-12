@@ -1,0 +1,48 @@
+# Arquivos compilados
+*.class
+# Logs
+*.log
+# Arquivos do BlueJ
+*.ctxt
+# Ferramentas móveis para Java (J2ME)
+mtj.tmp/
+# Arquivos de pacotes
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+# Logs de crash da JVM
+hs_err_pid*
+replay_pid*
+# Maven
+target/
+pom.xml.*
+# Gradle
+gradle/
+build/
+!gradle-wrapper.jar
+# IntelliJ IDEA
+idea/
+*.iml
+out/
+# Eclipse
+settings/
+bin/
+classpath
+project
+# NetBeans
+nbproject/private/
+build/
+dist/
+# Visual Studio Code
+vscode/
+*.code-workspace
+# macOS
+DS_Store
+# Arquivos temporários e backups
+*.tmp
+*.bak
+*.swp
