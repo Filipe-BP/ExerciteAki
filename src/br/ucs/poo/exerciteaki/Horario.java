@@ -1,4 +1,4 @@
-package poo;
+package br.ucs.poo.exerciteaki;
 
 import java.util.Date;
 

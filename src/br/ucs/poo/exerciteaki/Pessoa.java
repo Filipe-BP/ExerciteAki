@@ -1,18 +1,22 @@
-package poo;
+package br.ucs.poo.exerciteaki;
 
-public class Pessoa {
+public class Pessoa extends Usuario {
+
 	private String nome;
 	private String email;
 	private String telefone;
 	
-	public Pessoa() {
-		
-	}
+	public Pessoa() {}
 	
-	public Pessoa(String nome, String email, String telefone) {
+	public Pessoa(String login, String password, Boolean administrador, String nome, String email, String telefone) {
+		super(login, password, administrador);
 		this.nome=nome;
 		this.email=email;
 		this.telefone=telefone;
+	}
+	
+	public Pessoa(String login, String password, Boolean administrador) {
+		super(login, password, administrador);
 	}
 
 	public String getNome() {
@@ -37,6 +41,15 @@ public class Pessoa {
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
+	}
+	
+	public Pessoa cadastrar() {
+		Usuario usuario = Contexto.getUsuarioLogado();
+		if (usuario.isAdministrador()) {
+			Storage.addPessoa(this);
+			return this;
+		}
+		return null; // acesso negado
 	}
 	
 	@Override

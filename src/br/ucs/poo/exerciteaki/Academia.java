@@ -1,4 +1,4 @@
-package poo;
+package br.ucs.poo.exerciteaki;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,7 @@ public class Academia {
 	private Endereco endereco;  //associacao 1-1
 	private List<Horario> horarios; // associacao 1..n
 
-	public Academia () {
-		
-	}
+	public Academia () {}
 	
 	public Academia(String nome, String telefone, String website, Endereco endereco) {
 		this.nome=nome;
@@ -20,7 +18,6 @@ public class Academia {
 		this.website=website;
 		this.endereco=endereco;
 		this.horarios = new ArrayList<>();
-
 	}
 
 	public String getNome() {
@@ -75,4 +72,13 @@ public class Academia {
                "\nEndereço: " + endereco.toString() +
                "\nHorários: " + horarios.toString();
     }
+	
+	public Academia cadastrar(Academia academia) {
+		Usuario usuario = Contexto.getUsuarioLogado();
+		if (usuario.isAdministrador()) {
+			// adicionar academia ao "banco"
+			return academia;
+		}
+		return null;
+	}
 }

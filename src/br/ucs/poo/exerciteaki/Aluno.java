@@ -1,4 +1,4 @@
-package poo;
+package br.ucs.poo.exerciteaki;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -23,8 +23,9 @@ public class Aluno extends Pessoa {
         this.treinos = new ArrayList<>();
     }
 
-    public Aluno(String nome, String email, String telefone, Date dataNascimento, float altura, Academia academia) {
-        super(nome, email, telefone);
+	public Aluno(String login, String password, Boolean administrador, String nome, String email, String telefone,
+			Date dataNascimento, float altura, Academia academia) {
+        super(login, password, administrador, nome, email, telefone);
         this.dataNascimento = dataNascimento;
         this.altura = altura;
         this.academia = academia;
@@ -71,7 +72,7 @@ public class Aluno extends Pessoa {
     }
 
     public void adicionarEvolucao(Evolucao evolucao) {
-        this.evolucao.add(evolucao);
+        this.evolucoes.add(evolucao);
     }
 
     public List<Instrutor> getInstrutores() {

@@ -1,4 +1,4 @@
-package poo;
+package br.ucs.poo.exerciteaki;
 
 public class Endereco {
 	private String logradouro;
@@ -9,9 +9,7 @@ public class Endereco {
 	private String cidade;
 	private String estado;
 	
-	public Endereco() {
-		
-	}
+	public Endereco() {}
 	
 	public Endereco (String logradouro,String numero,String complemento,String bairro,String cep,String cidade,String estado) {
 		this.logradouro=logradouro;
