@@ -2,6 +2,7 @@ package br.ucs.poo.exerciteaki;
 
 public class Aparelho {
 	
+	private int id;
 	private String nome;
 	private String descricao;
 	private String funcao;
@@ -9,14 +10,23 @@ public class Aparelho {
 	
 	public Aparelho() {}
 	
-	public Aparelho(String nome, String descricao, String funcao, Academia academia) {
+	public Aparelho(int id,String nome, String descricao, String funcao, Academia academia) {
 		super();
+		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.funcao = funcao;
 		this.academia = academia;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getNome() {
 		return nome;
 	}

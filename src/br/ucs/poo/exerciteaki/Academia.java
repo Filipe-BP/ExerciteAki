@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Academia {
+	private int id;
 	private String nome;
 	private String telefone;
 	private String website;
@@ -12,12 +13,20 @@ public class Academia {
 
 	public Academia () {}
 	
-	public Academia(String nome, String telefone, String website, Endereco endereco) {
+	public Academia(int id, String nome, String telefone, String website, Endereco endereco) {
+		this.id = id;
 		this.nome=nome;
 		this.telefone=telefone;
 		this.website=website;
 		this.endereco=endereco;
 		this.horarios = new ArrayList<>();
+	}
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -66,7 +75,8 @@ public class Academia {
 	
 	@Override
     public String toString() {
-        return "Academia: " + nome +
+        return "Id: " + id +
+               "\nAcademia: " + nome +
                "\nTelefone: " + telefone +
                "\nWebsite: " + website +
                "\nEndereço: " + endereco.toString() +

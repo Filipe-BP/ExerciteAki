@@ -1,6 +1,7 @@
 package br.ucs.poo.exerciteaki;
 
 public class Endereco {
+	private int id;
 	private String logradouro;
 	private String numero;
 	private String complemento;
@@ -11,7 +12,8 @@ public class Endereco {
 	
 	public Endereco() {}
 	
-	public Endereco (String logradouro,String numero,String complemento,String bairro,String cep,String cidade,String estado) {
+	public Endereco (int id, String logradouro,String numero,String complemento,String bairro,String cep,String cidade,String estado) {
+		this.id = id;
 		this.logradouro=logradouro;
 		this.numero=numero;
 		this.complemento=complemento;
@@ -19,6 +21,14 @@ public class Endereco {
 		this.cep=cep;
 		this.cidade=cidade;
 		this.estado=estado;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getLogradouro() {
@@ -79,7 +89,7 @@ public class Endereco {
 	
 	@Override
     public String toString() {
-        return logradouro + ", " + numero + " - " + bairro + ", " +
+        return id + " - " + logradouro + ", " + numero + " - " + bairro + ", " +
                cidade + " - " + estado + " (" + cep + ")";
     }
 	

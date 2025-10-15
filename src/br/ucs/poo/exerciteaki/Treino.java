@@ -5,16 +5,26 @@ import java.util.List;
 
 public class Treino {
 	
+	private int id;
 	private Integer diaSemana;
 	private String nome;
 	private List<Exercicio> exercicios;
 	
 	public Treino() {}
 	
-	public Treino(Integer diaSemana, String nome) {
+	public Treino(int id, Integer diaSemana, String nome) {
+		this.id = id;
 		this.diaSemana = diaSemana;
 		this.nome = nome;
 		this.exercicios = new ArrayList<>();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Integer getDiaSemana() {

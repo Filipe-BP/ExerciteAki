@@ -23,9 +23,9 @@ public class Aluno extends Pessoa {
         this.treinos = new ArrayList<>();
     }
 
-	public Aluno(String login, String password, Boolean administrador, String nome, String email, String telefone,
+	public Aluno(String login, String password, Boolean administrador, int id, String nome, String email, String telefone,
 			Date dataNascimento, float altura, Academia academia) {
-        super(login, password, administrador, nome, email, telefone);
+        super(login, password, administrador, id, nome, email, telefone);
         this.dataNascimento = dataNascimento;
         this.altura = altura;
         this.academia = academia;

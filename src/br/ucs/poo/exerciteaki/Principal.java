@@ -18,7 +18,7 @@ public class Principal {
 		Contexto.login(login, senha);
 		System.out.println("\nUsuário logado:" + Contexto.getUsuarioLogado());
 		
-		Pessoa administrador = new Pessoa("diogenes123", "12345", true, "DONO", "diogenes@gmail.com", "54987345678");
+		Pessoa administrador = new Pessoa("diogenes123", "12345", true,1, "DONO", "diogenes@gmail.com", "54987345678");
 		administrador.cadastrar();
 		System.out.println("\n\nPessoas cadastradas: " + Storage.getPessoas());
 		

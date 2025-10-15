@@ -4,9 +4,9 @@ public class Instrutor extends Pessoa {
 	
 	private Formacao formacao;
 	
-	public Instrutor(String login, String password, Boolean administrador, String nome, String email, String telefone,
+	public Instrutor(String login, String password, Boolean administrador, int id, String nome, String email, String telefone,
 			Formacao formacao) {
-		super(login, password, administrador, nome, email, telefone);
+		super(login, password, administrador,id, nome, email, telefone);
 		this.formacao = formacao;
 	}
 
