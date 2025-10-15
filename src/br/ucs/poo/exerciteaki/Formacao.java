@@ -2,15 +2,25 @@ package br.ucs.poo.exerciteaki;
 
 public class Formacao {
 	
+	private int id;
 	private String nome;
 	private String descricao;
 
-	public Formacao(String nome, String descricao) {
+	public Formacao(int id, String nome, String descricao) {
 		super();
+		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getNome() {
 		return nome;
 	}

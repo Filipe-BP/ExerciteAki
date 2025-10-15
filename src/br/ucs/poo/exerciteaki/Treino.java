@@ -43,12 +43,23 @@ public class Treino {
 		this.nome = nome;
 	}
 
+	// Métodos padrão para lista de exercícios
 	public List<Exercicio> getExercicios() {
 		return exercicios;
 	}
 
 	public void adicionarExercicio(Exercicio exercicio) {
-		this.exercicios.add(exercicio);
+		exercicios.add(exercicio);
+	}
+
+	public void removerExercicio(Exercicio exercicio) {
+		exercicios.remove(exercicio);
+	}
+
+	public void alterarExercicio(int index, Exercicio novoExercicio) {
+		if (index >= 0 && index < exercicios.size()) {
+			exercicios.set(index, novoExercicio);
+		}
 	}
 
 }

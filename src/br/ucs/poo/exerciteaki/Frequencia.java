@@ -8,14 +8,16 @@ public class Frequencia {
 	private LocalDate data;
 	private LocalDateTime dataHoraEntrada;
 	private LocalDateTime dataHoraSaida;
+	private Aluno aluno;
 	
 	public Frequencia() {}
 	
-	public Frequencia(LocalDate data, LocalDateTime dataHoraEntrada, LocalDateTime dataHoraSaida) {
+	public Frequencia(LocalDate data, LocalDateTime dataHoraEntrada, LocalDateTime dataHoraSaida, Aluno aluno) {
 		super();
 		this.data = data;
 		this.dataHoraEntrada = dataHoraEntrada;
 		this.dataHoraSaida = dataHoraSaida;
+		this.aluno = aluno;
 	}
 	
 	public LocalDate getData() {
@@ -41,6 +43,13 @@ public class Frequencia {
 	public void setDataHoraSaida(LocalDateTime dataHoraSaida) {
 		this.dataHoraSaida = dataHoraSaida;
 	}
-	
+
+	public Aluno getAluno() {
+		return aluno;
+	}
+
+	public void setAluno(Aluno aluno) {
+		this.aluno = aluno;
+	}
 	
 }

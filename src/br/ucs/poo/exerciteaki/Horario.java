@@ -6,15 +6,17 @@ public class Horario {
 	private String diaSemana;
 	private Date horaAbertura;
 	private Date horaFechamento;
+	private Academia academia;
 	
 	public Horario() {
 		
 	}
 	
-	public Horario(String diaSemana, Date horaAbertura, Date horaFechamento) {
+	public Horario(String diaSemana, Date horaAbertura, Date horaFechamento, Academia academia) {
 		this.diaSemana=diaSemana;
 		this.horaAbertura=horaAbertura;
 		this.horaFechamento=horaFechamento;
+		this.academia = academia;
 	}
 
 	public String getDiaSemana() {
@@ -39,6 +41,14 @@ public class Horario {
 
 	public void setHoraFechamento(Date horaFechamento) {
 		this.horaFechamento = horaFechamento;
+	}
+
+	public Academia getAcademia() {
+    	return academia;
+	}
+
+	public void setAcademia(Academia academia) {
+		this.academia = academia;
 	}
 	
 	@Override
