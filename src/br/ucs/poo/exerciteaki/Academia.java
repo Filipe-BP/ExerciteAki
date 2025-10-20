@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Academia {
+	private static final String USER_DEFAULT = "admin";
+	private static final String PWD_DEFAULT = "012345678";
+	
+	private Usuario usuarioLogado;
+	
 	private int id;
 	private String nome;
 	private String telefone;
@@ -13,25 +18,25 @@ public class Academia {
 	private List<Aluno> alunos;
 	private List<Instrutor> instrutores;
 	private List<Aparelho> aparelhos;
-
-	public Academia () {
-		this.horarios = new ArrayList<>();
-		this.alunos = new ArrayList<>();
-		this.instrutores = new ArrayList<>();
-		this.aparelhos = new ArrayList<>();
-	}
+	private Pessoa administrador;
     
-	public Academia(int id, String nome, String telefone, String website, Endereco endereco) {
-		this.id = id;
-		this.nome=nome;
-		this.telefone=telefone;
-		this.website=website;
-		this.endereco=endereco;
-		this.horarios = new ArrayList<>();
-		this.alunos = new ArrayList<>();
-		this.instrutores = new ArrayList<>();
-		this.aparelhos = new ArrayList<>();
+	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco, Pessoa administrador) {
+		if (USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password)) {
+			this.id = id; // TODO fazer controle interno
+			this.nome=nome;
+			this.telefone=telefone;
+			this.website=website;
+			this.endereco=endereco;
+			this.administrador = administrador;
+			this.horarios = new ArrayList<>();
+			this.alunos = new ArrayList<>();
+			this.instrutores = new ArrayList<>();
+			this.aparelhos = new ArrayList<>();
+		} else {
+			System.out.println("Usuário não possui acesso a cadastrar academia");
+		}
 	}
+	
 	public int getId() {
 		return id;
 	}
@@ -72,21 +77,58 @@ public class Academia {
 		this.endereco = endereco;
 	}
 	
+	public Pessoa getAdministrador() {
+		return administrador;
+	}
+
+	public void setAdministrador(Pessoa administrador) {
+		this.administrador = administrador;
+	}
+	
+	//Métodos para login/logout
+	public void login(String login, String password) {
+		if (usuarioLogado != null) {
+			return; // já possui usuário logado, efetuar logout
+		}
+		Object user = Storage.findUsuario(login, password);
+		if (user != null) {
+			usuarioLogado = (Usuario) user;
+			return;
+		}
+//		if (USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password)) {
+//			Pessoa userDefault = new Pessoa(null, USER_DEFAULT, PWD_DEFAULT, true, 0, "System", "admin@defaultuser", "");
+//			Storage.addPessoa(userDefault);
+//			usuarioLogado = userDefault;
+//		}
+	}
+	
+	public Usuario getUsuarioLogado() {
+		return usuarioLogado;
+	}
+	
+	public void logout() {
+		usuarioLogado = null;
+	}
+	
 	// Métodos para Horarios
 	public void adicionarHorario(Horario horario) {
-		if (horarios.size() < 7) {
-			horarios.add(horario);
-		} else {
-			System.out.println("A academia já possui 7 horários cadastrados.");
+		if (this.usuarioLogado.isAdministrador()) {
+			if (horarios.size() < 7) {
+				horarios.add(horario);
+			} else {
+				System.out.println("A academia já possui 7 horários cadastrados.");
+			}
 		}
 	}
 
 	public void removerHorario(Horario horario) {
-		horarios.remove(horario);
+		if (this.usuarioLogado.isAdministrador()) {
+			horarios.remove(horario);
+		}
 	}
 
 	public void alterarHorario(int index, Horario novoHorario) {
-		if (index >= 0 && index < horarios.size()) {
+		if (this.usuarioLogado.isAdministrador() && index >= 0 && index < horarios.size()) {
 			horarios.set(index, novoHorario);
 		}
 	}
@@ -97,15 +139,19 @@ public class Academia {
 
 	// Métodos para Alunos
 	public void adicionarAluno(Aluno aluno) {
-		alunos.add(aluno);
+		if (isAdminOuInstrutor()) {
+			alunos.add(aluno);	
+		}
 	}
 
 	public void removerAluno(Aluno aluno) {
-		alunos.remove(aluno);
+		if(isAdminOuInstrutor()) {
+			alunos.remove(aluno);
+		}
 	}
 
 	public void alterarAluno(int index, Aluno novoAluno) {
-		if (index >= 0 && index < alunos.size()) {
+		if (isAdminOuInstrutor() && index >= 0 && index < alunos.size()) {
 			alunos.set(index, novoAluno);
 		}
 	}
@@ -116,15 +162,19 @@ public class Academia {
 
 	// Métodos para Instrutores
 	public void adicionarInstrutor(Instrutor instrutor) {
-		instrutores.add(instrutor);
+		if (this.usuarioLogado.isAdministrador()) {
+			instrutores.add(instrutor);
+		}
 	}
 
 	public void removerInstrutor(Instrutor instrutor) {
-		instrutores.remove(instrutor);
+		if (this.usuarioLogado.isAdministrador()) {
+			instrutores.remove(instrutor);
+		}
 	}
 
 	public void alterarInstrutor(int index, Instrutor novoInstrutor) {
-		if (index >= 0 && index < instrutores.size()) {
+		if (this.usuarioLogado.isAdministrador() && index >= 0 && index < instrutores.size()) {
 			instrutores.set(index, novoInstrutor);
 		}
 	}
@@ -135,15 +185,19 @@ public class Academia {
 
 	// Métodos para Aparelhos
 	public void adicionarAparelho(Aparelho aparelho) {
-		aparelhos.add(aparelho);
+		if (this.usuarioLogado.isAdministrador()) {
+			aparelhos.add(aparelho);
+		}
 	}
 
 	public void removerAparelho(Aparelho aparelho) {
-		aparelhos.remove(aparelho);
+		if (this.usuarioLogado.isAdministrador()) {
+			aparelhos.remove(aparelho);
+		}
 	}
 
 	public void alterarAparelho(int index, Aparelho novoAparelho) {
-		if (index >= 0 && index < aparelhos.size()) {
+		if (this.usuarioLogado.isAdministrador() && index >= 0 && index < aparelhos.size()) {
 			aparelhos.set(index, novoAparelho);
 		}
 	}
@@ -158,19 +212,14 @@ public class Academia {
 			   "\nAcademia: " + nome +
 			   "\nTelefone: " + telefone +
 			   "\nWebsite: " + website +
-			   "\nEndereço: " + endereco.toString() +
-			   "\nHorários: " + horarios.toString() +
-			   "\nAlunos: " + alunos.toString() +
-			   "\nInstrutores: " + instrutores.toString() +
-			   "\nAparelhos: " + aparelhos.toString();
+			   "\nEndereço: " + (this.endereco != null ? this.endereco.toString() : "") +
+			   "\nHorários: " + (horarios != null ? horarios.toString() : "") +
+			   "\nAlunos: " + (alunos != null ? alunos.toString() : "") +
+			   "\nInstrutores: " + (instrutores != null ? instrutores.toString() : "") +
+			   "\nAparelhos: " + (aparelhos != null ? aparelhos.toString() : "");
 	}
 	
-	public Academia cadastrar(Academia academia) {
-		Usuario usuario = Contexto.getUsuarioLogado();
-		if (usuario.isAdministrador()) {
-			// adicionar academia ao "banco"
-			return academia;
-		}
-		return null;
+	private boolean isAdminOuInstrutor() {
+		return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
 	}
 }

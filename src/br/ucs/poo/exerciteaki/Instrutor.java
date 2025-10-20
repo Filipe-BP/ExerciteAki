@@ -6,21 +6,12 @@ public class Instrutor extends Pessoa {
 	
 	private Formacao formacao;
 	private List<Treino> treinos;
-	private Academia academia;
 	
 	public Instrutor(String login, String password, Boolean administrador, int id, String nome, String email, String telefone,
 			Formacao formacao, Academia academia) {
-		super(login, password, administrador,id, nome, email, telefone);
+		super(academia, login, password, administrador,id, nome, email, telefone);
 		this.formacao = formacao;
 		this.treinos = new ArrayList<>();
-		this.academia = academia;
-	}
-	public Academia getAcademia() {
-		return academia;
-	}
-
-	public void setAcademia(Academia academia) {
-		this.academia = academia;
 	}
 
 	public Formacao getFormacao() {

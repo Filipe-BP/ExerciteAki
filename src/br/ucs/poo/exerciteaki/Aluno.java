@@ -9,7 +9,6 @@ public class Aluno extends Pessoa {
     private float altura;
     
     // Associações
-    private Academia academia;
     private List<Frequencia> frequencias;
     private List<Evolucao> evolucoes;
     private List<Treino> treinos;
@@ -21,12 +20,11 @@ public class Aluno extends Pessoa {
         this.treinos = new ArrayList<>();
     }
 
-    public Aluno(String login, String password, Boolean administrador, int id, String nome, String email, String telefone,
-            Date dataNascimento, float altura, Academia academia) {
-        super(login, password, administrador, id, nome, email, telefone);
+    public Aluno(String login, String password, Boolean administrador, int id, Academia academia, String nome, String email, String telefone,
+            Date dataNascimento, float altura) {
+        super(academia, login, password, administrador, id, nome, email, telefone);
         this.dataNascimento = dataNascimento;
         this.altura = altura;
-        this.academia = academia;
         this.frequencias = new ArrayList<>();
         this.evolucoes = new ArrayList<>();
         this.treinos = new ArrayList<>();
@@ -48,15 +46,7 @@ public class Aluno extends Pessoa {
         this.altura = altura;
     }
 
-    public Academia getAcademia() {
-        return academia;
-    }
-
-    public void setAcademia(Academia academia) {
-        this.academia = academia;
-    }
-
-        // Métodos para Treinos
+    // Métodos para Treinos
     public List<Treino> getTreinos() {
         return treinos;
     }

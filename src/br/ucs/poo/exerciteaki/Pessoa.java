@@ -3,13 +3,14 @@ package br.ucs.poo.exerciteaki;
 public class Pessoa extends Usuario {
 
 	private int id;
+	private Academia academia;
 	private String nome;
 	private String email;
 	private String telefone;
 	
 	public Pessoa() {}
 	
-	public Pessoa(String login, String password, Boolean administrador,int id, String nome, String email, String telefone) {
+	public Pessoa(Academia academia, String login, String password, Boolean administrador,int id, String nome, String email, String telefone) {
 		super(login, password, administrador);
 		this.id = id;
 		this.nome=nome;
@@ -53,13 +54,12 @@ public class Pessoa extends Usuario {
 		this.telefone = telefone;
 	}
 	
-	public Pessoa cadastrar() {
-		Usuario usuario = Contexto.getUsuarioLogado();
-		if (usuario.isAdministrador()) {
-			Storage.addPessoa(this);
-			return this;
-		}
-		return null; // acesso negado
+	public Academia getAcademia() {
+		return academia;
+	}
+
+	public void setAcademia(Academia academia) {
+		this.academia = academia;
 	}
 	
 	@Override
