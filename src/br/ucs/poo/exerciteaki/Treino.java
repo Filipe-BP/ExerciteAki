@@ -9,13 +9,14 @@ public class Treino {
 	private Integer diaSemana;
 	private String nome;
 	private List<Exercicio> exercicios;
-	
+	private Aluno aluno;
 	public Treino() {}
 	
-	public Treino(int id, Integer diaSemana, String nome) {
+	public Treino(int id, Integer diaSemana, String nome, Aluno aluno) {
 		this.id = id;
 		this.diaSemana = diaSemana;
 		this.nome = nome;
+		this.aluno = aluno;
 		this.exercicios = new ArrayList<>();
 	}
 
@@ -41,6 +42,14 @@ public class Treino {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	public Aluno getAluno() {
+	    return aluno;
+	}
+
+	public void setAluno(Aluno aluno) {
+	    this.aluno = aluno;
 	}
 
 	// Métodos padrão para lista de exercícios

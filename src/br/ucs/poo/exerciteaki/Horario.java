@@ -1,5 +1,6 @@
 package br.ucs.poo.exerciteaki;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Horario {
@@ -52,8 +53,8 @@ public class Horario {
 	}
 	
 	@Override
-    public String toString() {
-        return diaSemana + ": abre às " + horaAbertura + ", fecha às " + horaFechamento;
-    }
-	
+	public String toString() {
+	    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	    return diaSemana + ": abre às " + sdf.format(horaAbertura) + ", fecha às " + sdf.format(horaFechamento);
+	}
 }

@@ -59,4 +59,8 @@ public class Aparelho {
 		this.academia = academia;
 	}
 	
+	@Override
+	public String toString() {
+	    return "ID: " + id + " | Nome: " + nome;
+	}
 }

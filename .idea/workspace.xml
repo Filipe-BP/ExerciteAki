@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68955409-8f27-40fe-aefd-2df7807e1d40" name="Changes" comment="" />
+    <list default="true" id="68955409-8f27-40fe-aefd-2df7807e1d40" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/bin/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/bin/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Academia.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Academia.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aluno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aluno.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aparelho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aparelho.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Horario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Horario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Principal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Principal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Treino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Treino.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,9 +21,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "guimaraesss"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Filipe-BP/ExerciteAki.git",
+    "accountId": "a8459aa1-39aa-4f3d-a5b4-1ae155abfc7b"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="341yhUAXrGHdT3SQbQGHZ49uu1v" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -24,10 +44,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/samara.castro/projects/ExerciteAki",
+    "last_opened_file_path": "C:/Users/vinic/Documents/ucs/poo/trabalho att/ExerciteAki",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -40,14 +62,6 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

@@ -47,10 +47,18 @@ public class Aluno extends Pessoa {
     }
 
     // Métodos para Treinos
+    
     public List<Treino> getTreinos() {
         return treinos;
     }
-
+    
+    public void adicionarTreino(Treino treino) {
+        treinos.add(treino);
+    }
+    
+    public void removerTreino(Treino treino) {
+        treinos.remove(treino);
+    }
     // O aluno só pode consultar os treinos
 
     // Métodos para Frequencias

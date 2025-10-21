@@ -214,6 +214,40 @@ public class Academia {
 			   "\nAparelhos: " + (aparelhos != null ? aparelhos.toString() : "");
 	}
 	
+	public String exibirDadosPublicos() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("Id: ").append(id);
+	    sb.append("\nAcademia: ").append(nome);
+	    sb.append("\nTelefone: ").append(telefone);
+	    sb.append("\nWebsite: ").append(website);
+	    sb.append("\nEndereço: ").append(endereco.toString());
+
+	    sb.append("\nHorários: ").append(horarios.isEmpty() ? "[]" : horarios);
+
+	    sb.append("\nAlunos:");
+	    if (alunos.isEmpty()) {
+	        sb.append(" Nenhum aluno cadastrado");
+	    } else {
+	        for (Aluno a : alunos) {
+	            sb.append("\n - ").append(a.getNome());
+	        }
+	    }
+
+	    sb.append("\nInstrutores:");
+	    if (instrutores.isEmpty()) {
+	        sb.append(" Nenhum instrutor cadastrado");
+	    } else {
+	        for (Instrutor i : instrutores) {
+	            sb.append("\n - ").append(i.getNome());
+	            if (i.getFormacao() != null) {
+	                sb.append(" (").append(i.getFormacao().getNome()).append(")");
+	            }
+	        }
+	    }
+
+	    return sb.toString();
+	}
+	
 	private boolean isAdminOuInstrutor() {
 		return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
 	}
