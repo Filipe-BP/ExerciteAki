@@ -22,7 +22,7 @@ public class Academia {
     
 	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco, Pessoa administrador) {
 		if (USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password)) {
-			this.id = id; // TODO fazer controle interno
+			this.id = id;
 			this.nome=nome;
 			this.telefone=telefone;
 			this.website=website;
@@ -33,7 +33,7 @@ public class Academia {
 			this.instrutores = new ArrayList<>();
 			this.aparelhos = new ArrayList<>();
 		} else {
-			System.out.println("Usuário não possui acesso a cadastrar academia");
+			throw new RuntimeException("Usuário não possui acesso a cadastrar academia");
 		}
 	}
 	
@@ -82,6 +82,7 @@ public class Academia {
 	}
 
 	public void setAdministrador(Pessoa administrador) {
+		Storage.addPessoa(administrador);
 		this.administrador = administrador;
 	}
 	
@@ -93,13 +94,7 @@ public class Academia {
 		Object user = Storage.findUsuario(login, password);
 		if (user != null) {
 			usuarioLogado = (Usuario) user;
-			return;
 		}
-//		if (USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password)) {
-//			Pessoa userDefault = new Pessoa(null, USER_DEFAULT, PWD_DEFAULT, true, 0, "System", "admin@defaultuser", "");
-//			Storage.addPessoa(userDefault);
-//			usuarioLogado = userDefault;
-//		}
 	}
 	
 	public Usuario getUsuarioLogado() {

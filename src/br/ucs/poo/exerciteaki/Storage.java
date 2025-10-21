@@ -27,7 +27,7 @@ abstract class Storage {
 				return pessoas.get(i);
 			}
 		}		
-		return null; // Usuário não encontrado
+		throw new RuntimeException("Usuário não encontrado!");
 	}
 
 	public static void removePessoa(Pessoa pessoa) {
@@ -41,8 +41,7 @@ abstract class Storage {
 				return academia;
 			}
 		}
-		System.out.println("Academia com o id " + id + " não encontrada!");
-		return null;
+		throw new RuntimeException("Academia com o id " + id + " não encontrada!");
 	}
 	
 	public static String getAcademias() {
@@ -51,7 +50,10 @@ abstract class Storage {
 			if (i > 0) {
 				s.append(", ");
 			}
-			s.append(academias.get(i).toString());
+			Academia acad = academias.get(i);
+			if (acad != null) {
+				s.append(acad.getId() + " " + acad.getNome());
+			}
 		}
 		return s.toString();
 	}

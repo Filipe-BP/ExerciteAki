@@ -10,7 +10,7 @@ public class Pessoa extends Usuario {
 	
 	public Pessoa() {}
 	
-	public Pessoa(Academia academia, String login, String password, Boolean administrador,int id, String nome, String email, String telefone) {
+	public Pessoa(Academia academia, String login, String password, Boolean administrador, int id, String nome, String email, String telefone) {
 		super(login, password, administrador);
 		this.id = id;
 		this.nome=nome;
