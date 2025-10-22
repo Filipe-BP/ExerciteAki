@@ -16,6 +16,7 @@ public class Pessoa extends Usuario {
 		this.nome=nome;
 		this.email=email;
 		this.telefone=telefone;
+		this.academia=academia;
 	}
 	
 	public Pessoa(String login, String password, Boolean administrador) {

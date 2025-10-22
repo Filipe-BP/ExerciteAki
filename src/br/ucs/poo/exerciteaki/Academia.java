@@ -1,11 +1,12 @@
 package br.ucs.poo.exerciteaki;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Academia {
 	private static final String USER_DEFAULT = "admin";
-	private static final String PWD_DEFAULT = "012345678";
+	private static final String PWD_DEFAULT = "1234";
 	
 	private Usuario usuarioLogado;
 	
@@ -138,6 +139,15 @@ public class Academia {
 			alunos.add(aluno);	
 		}
 	}
+	
+	public void adicionarAlunos(List<Aluno> alunos) {
+		if (isAdminOuInstrutor()) {
+//			for (int i = 0; i < alunos.size(); i++) {
+//				this.alunos.add(alunos.get(i));
+//			}
+			this.alunos.addAll(alunos);
+		}
+	}
 
 	public void removerAluno(Aluno aluno) {
 		if(isAdminOuInstrutor()) {
@@ -159,6 +169,12 @@ public class Academia {
 	public void adicionarInstrutor(Instrutor instrutor) {
 		if (this.usuarioLogado.isAdministrador()) {
 			instrutores.add(instrutor);
+		}
+	}
+	
+	public void adicionarInstrutores(List<Instrutor> instrutores) {
+		if (this.usuarioLogado.isAdministrador()) {
+			this.instrutores.addAll(instrutores);
 		}
 	}
 

@@ -36,55 +36,58 @@ public class Principal {
     }
 
     private static void inicializarAcademia() {
-        System.out.println("=== Cadastro da Academia ===");
-        System.out.print("Login do administrador padrão (use 'admin'): ");
+        System.out.println("---Cadastro da Academia---");
+        System.out.print("Login do administrador padrão: ");
         String login = scanner.nextLine();
 
-        System.out.print("Senha do administrador padrão (use '012345678'): ");
+        System.out.print("Senha do administrador padrão: ");
         String senha = scanner.nextLine();
+        
+        inicializarAcademiaComValoresPadrao();
+//        System.out.print("Nome da academia: ");
+//        String nome = scanner.nextLine();
+//
+//        System.out.print("Telefone: ");
+//        String telefone = scanner.nextLine();
+//
+//        System.out.print("Website: ");
+//        String website = scanner.nextLine();
+//
+//        System.out.println("=== Endereço da academia ===");
+//        System.out.print("ID: ");
+//        int idEndereco = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        System.out.print("Logradouro: ");
+//        String logradouro = scanner.nextLine();
+//
+//        System.out.print("Número: ");
+//        String numero = scanner.nextLine();
+//
+//        System.out.print("Complemento: ");
+//        String complemento = scanner.nextLine();
+//
+//        System.out.print("Bairro: ");
+//        String bairro = scanner.nextLine();
+//
+//        System.out.print("CEP: ");
+//        String cep = scanner.nextLine();
+//
+//        System.out.print("Cidade: ");
+//        String cidade = scanner.nextLine();
+//
+//        System.out.print("Estado: ");
+//        String estado = scanner.nextLine();
 
-        System.out.print("Nome da academia: ");
-        String nome = scanner.nextLine();
-
-        System.out.print("Telefone: ");
-        String telefone = scanner.nextLine();
-
-        System.out.print("Website: ");
-        String website = scanner.nextLine();
-
-        System.out.println("=== Endereço da academia ===");
-        System.out.print("ID: ");
-        int idEndereco = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Logradouro: ");
-        String logradouro = scanner.nextLine();
-
-        System.out.print("Número: ");
-        String numero = scanner.nextLine();
-
-        System.out.print("Complemento: ");
-        String complemento = scanner.nextLine();
-
-        System.out.print("Bairro: ");
-        String bairro = scanner.nextLine();
-
-        System.out.print("CEP: ");
-        String cep = scanner.nextLine();
-
-        System.out.print("Cidade: ");
-        String cidade = scanner.nextLine();
-
-        System.out.print("Estado: ");
-        String estado = scanner.nextLine();
-
-        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
-        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", telefone, null);
-
-        academia = new Academia(login, senha, 1, nome, telefone, website, endereco, admin);
-        Storage.addAcademia(academia);
+//        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
+        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", null, null);
+//
+//        academia = new Academia(login, senha, 1, nome, telefone, website, endereco, admin);
+//        Storage.addAcademia(academia);
         Storage.addPessoa(admin);
-        academia.login("admin", "012345678");
+        academia.login("admin", "1234");
+        
+        preencherSistemaComDadosDeTeste();
         System.out.println("Academia cadastrada com sucesso.");
         
     }
@@ -170,7 +173,7 @@ public class Principal {
             academia.login(login, senha);
 
             System.out.println("Login bem-sucedido!");
-            System.out.println("Bem-vindo, " + usuario.getLogin());
+            System.out.println("Bem-vindo, " + usuario.getNome());
 
             if (usuario instanceof Administrador) {
                 System.out.println("Tipo de usuário: Administrador");
@@ -225,7 +228,7 @@ public class Principal {
 
     private static Date parseDate(String dataStr) {
         try {
-            return new SimpleDateFormat("dd/MM/yyyy").parse(dataStr);
+            return new SimpleDateFormat("dd/mm/yyyy").parse(dataStr);
         } catch (ParseException e) {
             System.out.println("Data inválida. Usando data atual.");
             return new Date();
@@ -233,13 +236,13 @@ public class Principal {
     }
     
     private static void consultarAcademia(Pessoa usuario) {
-        System.out.println("\n=== DADOS DA ACADEMIA ===");
+        System.out.println("   DADOS DA ACADEMIA    ");
         System.out.println(academia.exibirDadosPublicos());
     }
 
     private static void alterarAcademia(Usuario usuario) {
         if (usuario.isAdministrador()) {
-            System.out.println("\n=== ALTERAR DADOS DA ACADEMIA ===");
+            System.out.println("\n   ALTERAR DADOS DA ACADEMIA    ");
 
             System.out.print("Novo nome: ");
             String nome = scanner.nextLine();
@@ -261,7 +264,7 @@ public class Principal {
 
     private static void removerAcademia(Pessoa usuario) {
         if (usuario instanceof Administrador admin) {
-        	Storage.removePessoa(usuario); // agora funciona, admin é Pessoa
+        	Storage.removePessoa(usuario); 
             System.out.println("Academia removida. Encerrando sistema.");
             System.exit(0);
         } else {
@@ -277,7 +280,7 @@ public class Principal {
 
         boolean gerenciando = true;
         while (gerenciando) {
-            System.out.println("\n=== GERENCIAR HORÁRIOS ===");
+            System.out.println("\n    GERENCIAR HORÁRIOS    ");
             System.out.println("1. Adicionar horário");
             System.out.println("2. Alterar horário");
             System.out.println("3. Remover horário");
@@ -839,5 +842,65 @@ public class Principal {
         }
     }
     
+    private static void inicializarAcademiaComValoresPadrao() {
+        Endereco enderecoPadrao = new Endereco(
+            999, 
+            "Rua da Programação", 
+            "101", 
+            "Bloco A", 
+            "Bairro Teste", 
+            "99999-999", 
+            "Cidade Padrão", 
+            "TS" // TS para Teste
+        );
+
+        academia = new Academia(
+            "admin", 
+            "1234", 
+            1, // ID da Academia
+            "Academia Giga Fitness", 
+            "(51) 3333-4444", 
+            "www.gigafitness.com.br", 
+            enderecoPadrao, 
+            null
+        );
+
+        Storage.addAcademia(academia);
+    }
     
+    private static void preencherSistemaComDadosDeTeste() {
+        System.out.println("... Adicionando 10 registros de Endereços e Pessoas de Teste.");
+        
+        Academia academia = Storage.findAcademia(1);
+        Instrutor instrutor1 = new Instrutor("instrutor10", "senha123", false, 10, "Carlos Santos", "carlos.s@gym.com", "(51) 9876-1234", null, academia);
+        Instrutor instrutor2 = new Instrutor("instrutor11", "senha123", false, 11, "Ana Maria Silva", "ana.m@gym.com", "(51) 9876-5678", null, academia);
+
+        Aluno aluno1 = new Aluno("aluno12", "senha123", false, 12, academia, "João Pereira", "joao.p@teste.com", "(51) 9912-3456", new Date(), 1.75f);
+        Aluno aluno2 = new Aluno("aluno13", "senha123", false, 13, academia, "Maria Oliveira", "maria.o@teste.com", "(51) 9912-4567", new Date(), 1.63f);
+        Aluno aluno3 = new Aluno("aluno14", "senha123", false, 14, academia, "Pedro Souza", "pedro.s@teste.com", "(51) 9912-5678", new Date(), 1.88f);
+        Aluno aluno4 = new Aluno("aluno15", "senha123", false, 15, academia, "Julia Lima", "julia.l@teste.com", "(51) 9912-6789", new Date(), 1.70f);
+        Aluno aluno5 = new Aluno("aluno16", "senha123", false, 16, academia, "Lucas Rocha", "lucas.r@teste.com", "(51) 9912-7890", new Date(), 1.82f);
+        Aluno aluno6 = new Aluno("aluno17", "senha123", false, 17, academia, "Mariana Alves", "mariana.a@teste.com", "(51) 9912-8901", new Date(), 1.68f);
+        Aluno aluno7 = new Aluno("aluno18", "senha123", false, 18, academia, "Felipe Costa", "felipe.c@teste.com", "(51) 9912-9012", new Date(), 1.77f);
+        Aluno aluno8 = new Aluno("aluno19", "senha123", false, 19, academia, "Larissa Melo", "larissa.m@teste.com", "(51) 9912-0123", new Date(), 1.60f);
+        Aluno aluno9 = new Aluno("aluno20", "senha123", false, 20, academia, "Rafael Gomes", "rafael.g@teste.com", "(51) 9912-1234", new Date(), 1.85f);
+
+        List<Aluno> alunos = List.of(aluno1, aluno2, aluno3, aluno4, aluno5, aluno6,aluno7,aluno8,aluno9);
+        academia.adicionarAlunos(alunos);
+        
+        List<Instrutor> instrutores = List.of(instrutor1, instrutor2);
+        academia.adicionarInstrutores(instrutores);
+        
+        Storage.addPessoa(instrutor1);
+        Storage.addPessoa(instrutor2);
+        Storage.addPessoa(aluno1);
+        Storage.addPessoa(aluno2);
+        Storage.addPessoa(aluno3);
+        Storage.addPessoa(aluno4);
+        Storage.addPessoa(aluno5);
+        Storage.addPessoa(aluno6);
+        Storage.addPessoa(aluno7);
+        Storage.addPessoa(aluno8);
+        Storage.addPessoa(aluno9);
+	}
 }
