@@ -1,6 +1,10 @@
 package br.ucs.poo.exerciteaki;
 
-public class Formacao {
+import java.io.Serializable;
+
+public class Formacao implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int id;
 	private String nome;

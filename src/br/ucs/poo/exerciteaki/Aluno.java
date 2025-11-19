@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Aluno extends Pessoa {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Date dataNascimento;
     private float altura;
     

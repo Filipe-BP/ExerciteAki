@@ -2,15 +2,19 @@ package br.ucs.poo.exerciteaki;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+
 
 public class Principal {
-
-    private static Scanner scanner = new Scanner(System.in);
+	
+	private static Scanner scanner = new Scanner(System.in);
     private static int contadorId = 1;
     private static Academia academia;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         inicializarAcademia();
 
         boolean ativo = true;
@@ -174,7 +178,7 @@ public class Principal {
 
             System.out.println("Login bem-sucedido!");
             System.out.println("Bem-vindo, " + usuario.getNome());
-
+            
             if (usuario instanceof Administrador) {
                 System.out.println("Tipo de usuário: Administrador");
             } else if (usuario instanceof Instrutor) {
@@ -804,7 +808,7 @@ public class Principal {
         System.out.print("Informe o dia da semana (1=Segunda, ..., 7=Domingo): ");
         int dia = Integer.parseInt(scanner.nextLine());
 
-        List<Treino> treinosDoDia = new ArrayList<>();
+        List<Treino> treinosDoDia = new ArrayList<Treino>();
         for (Treino t : aluno.getTreinos()) {
             if (t.getDiaSemana() == dia) {
                 treinosDoDia.add(t); // referência direta

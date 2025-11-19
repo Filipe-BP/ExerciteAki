@@ -1,10 +1,14 @@
 package br.ucs.poo.exerciteaki;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Academia {
+public class Academia implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private static final String USER_DEFAULT = "admin";
 	private static final String PWD_DEFAULT = "1234";
 	

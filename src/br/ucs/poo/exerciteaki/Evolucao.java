@@ -1,8 +1,11 @@
 package br.ucs.poo.exerciteaki;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Evolucao {
+public class Evolucao implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private LocalDate data;
 	private Float peso;

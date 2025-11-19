@@ -1,5 +1,11 @@
 package br.ucs.poo.exerciteaki;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,4 +74,43 @@ abstract class Storage {
 		}
 		return s.toString();
 	}
+	
+	public static void gravarArquivo(String nomeArquivo, List<?> list) {
+		try {
+			FileOutputStream fi = new FileOutputStream(nomeArquivo);
+			ObjectOutputStream ou = new ObjectOutputStream(fi);
+			
+			ou.writeObject(list);
+			ou.close();
+			fi.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static List<?> lerArquivo(String nomeArquivo) {
+		List<?> data = new ArrayList<>();
+		File f = new File(nomeArquivo);
+		
+		if (f.exists()) {
+			try {
+				FileInputStream fi = new FileInputStream(nomeArquivo);
+				ObjectInputStream oi = new ObjectInputStream(fi);
+				Object o = oi.readObject();
+				data = (List<?>) o;
+				
+				oi.close();
+				fi.close();
+				
+				return data;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return data;
+		
+	}
+	
 }

@@ -1,9 +1,12 @@
 package br.ucs.poo.exerciteaki;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Frequencia {
+public class Frequencia implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private LocalDate data;
 	private LocalDateTime dataHoraEntrada;

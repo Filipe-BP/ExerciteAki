@@ -1,7 +1,11 @@
 package br.ucs.poo.exerciteaki;
 
-public class Pessoa extends Usuario {
+import java.io.Serializable;
 
+public class Pessoa extends Usuario implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private int id;
 	private Academia academia;
 	private String nome;

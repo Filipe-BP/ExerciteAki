@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Instrutor extends Pessoa {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private Formacao formacao;
 	private List<Treino> treinos;
 	

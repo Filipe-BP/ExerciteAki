@@ -1,6 +1,10 @@
 package br.ucs.poo.exerciteaki;
 
-public class Exercicio {
+import java.io.Serializable;
+
+public class Exercicio implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private Integer ordem;
 	private Float carga;
