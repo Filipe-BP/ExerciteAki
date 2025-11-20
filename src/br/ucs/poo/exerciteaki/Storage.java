@@ -50,6 +50,15 @@ abstract class Storage {
 		throw new RuntimeException("Academia com o id " + id + " não encontrada!");
 	}
 	
+	public static Academia findAcademia(String nomeArquivo) {
+		Academia data = (Academia) lerArquivoObj(nomeArquivo);
+		if (data == null) {
+			throw new RuntimeException("Academia não encontrada!");	
+		}
+		academias.add(data);
+		return data;
+	}
+	
 	public static String getAcademias() {
 		StringBuilder s = new StringBuilder();
 		for (int i = 0; i < academias.size(); i++) {
@@ -88,6 +97,19 @@ abstract class Storage {
 		}
 	}
 	
+	public static void gravarArquivo(String nomeArquivo, Object obj) {
+		try {
+			FileOutputStream fi = new FileOutputStream(nomeArquivo);
+			ObjectOutputStream ou = new ObjectOutputStream(fi);
+			
+			ou.writeObject(obj);
+			ou.close();
+			fi.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static List<?> lerArquivo(String nomeArquivo) {
 		List<?> data = new ArrayList<>();
 		File f = new File(nomeArquivo);
@@ -110,7 +132,35 @@ abstract class Storage {
 			}
 		}
 		return data;
+	}
+	
+	public static Object lerArquivoObj(String nomeArquivo) {
+		Object data = null;
+		File f = new File(nomeArquivo);
 		
+		if (f.exists()) {
+			try {
+				FileInputStream fi = new FileInputStream(nomeArquivo);
+				ObjectInputStream oi = new ObjectInputStream(fi);
+				Object o = oi.readObject();
+				data = (Object) o;
+				
+				oi.close();
+				fi.close();
+				
+				return data;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return data;
+	}
+	
+	public static boolean arquivoExiste(String nomeArquivo) {
+		File f = new File(nomeArquivo);
+		return f.exists();
 	}
 	
 }

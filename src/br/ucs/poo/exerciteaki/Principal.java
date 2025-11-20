@@ -40,14 +40,21 @@ public class Principal {
     }
 
     private static void inicializarAcademia() {
-        System.out.println("---Cadastro da Academia---");
-        System.out.print("Login do administrador padrão: ");
-        String login = scanner.nextLine();
-
-        System.out.print("Senha do administrador padrão: ");
-        String senha = scanner.nextLine();
+        System.out.println("-------- Bem-vindo(a) ao ExerciteAki --------");
         
-        inicializarAcademiaComValoresPadrao();
+        boolean criaDadosDeTeste = !Storage.arquivoExiste(Academia.ARQUIVO_ACADEMIA);
+        if (criaDadosDeTeste) {
+        	preencherSistemaComDadosDeTeste();
+		} else {
+			throw new RuntimeException("IMPLEMENTAR!");
+		}
+        
+//        System.out.print("Login do administrador padrão: ");
+//        String login = scanner.nextLine();
+//
+//        System.out.print("Senha do administrador padrão: ");
+//        String senha = scanner.nextLine();
+        
 //        System.out.print("Nome da academia: ");
 //        String nome = scanner.nextLine();
 //
@@ -84,15 +91,12 @@ public class Principal {
 //        String estado = scanner.nextLine();
 
 //        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
-        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", null, null);
+//        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", null, null);
 //
 //        academia = new Academia(login, senha, 1, nome, telefone, website, endereco, admin);
 //        Storage.addAcademia(academia);
-        Storage.addPessoa(admin);
-        academia.login("admin", "1234");
-        
-        preencherSistemaComDadosDeTeste();
-        System.out.println("Academia cadastrada com sucesso.");
+//        Storage.addPessoa(admin);
+//        academia.login("admin", "1234");
         
     }
 
@@ -846,36 +850,13 @@ public class Principal {
         }
     }
     
-    private static void inicializarAcademiaComValoresPadrao() {
-        Endereco enderecoPadrao = new Endereco(
-            999, 
-            "Rua da Programação", 
-            "101", 
-            "Bloco A", 
-            "Bairro Teste", 
-            "99999-999", 
-            "Cidade Padrão", 
-            "TS" // TS para Teste
-        );
-
-        academia = new Academia(
-            "admin", 
-            "1234", 
-            1, // ID da Academia
-            "Academia Giga Fitness", 
-            "(51) 3333-4444", 
-            "www.gigafitness.com.br", 
-            enderecoPadrao, 
-            null
-        );
-
-        Storage.addAcademia(academia);
-    }
-    
     private static void preencherSistemaComDadosDeTeste() {
-        System.out.println("... Adicionando 10 registros de Endereços e Pessoas de Teste.");
-        
-        Academia academia = Storage.findAcademia(1);
+    	Academia academia = inicializarAcademiaComValoresPadrao();
+    	
+    	Pessoa admin = new Administrador(Academia.USER_DEFAULT, Academia.USER_DEFAULT, true, 0, "Admin Padrão", "admin@academia.com", null, academia);
+    	Storage.addPessoa(admin);
+    	academia.login(admin.getLogin(), admin.getPassword());
+    	
         Instrutor instrutor1 = new Instrutor("instrutor10", "senha123", false, 10, "Carlos Santos", "carlos.s@gym.com", "(51) 9876-1234", null, academia);
         Instrutor instrutor2 = new Instrutor("instrutor11", "senha123", false, 11, "Ana Maria Silva", "ana.m@gym.com", "(51) 9876-5678", null, academia);
 
@@ -889,22 +870,42 @@ public class Principal {
         Aluno aluno8 = new Aluno("aluno19", "senha123", false, 19, academia, "Larissa Melo", "larissa.m@teste.com", "(51) 9912-0123", new Date(), 1.60f);
         Aluno aluno9 = new Aluno("aluno20", "senha123", false, 20, academia, "Rafael Gomes", "rafael.g@teste.com", "(51) 9912-1234", new Date(), 1.85f);
 
-        List<Aluno> alunos = List.of(aluno1, aluno2, aluno3, aluno4, aluno5, aluno6,aluno7,aluno8,aluno9);
+        List<Aluno> alunos = List.of(aluno1, aluno2, aluno3, aluno4, aluno5, aluno6, aluno7, aluno8, aluno9);
         academia.adicionarAlunos(alunos);
         
         List<Instrutor> instrutores = List.of(instrutor1, instrutor2);
         academia.adicionarInstrutores(instrutores);
         
-        Storage.addPessoa(instrutor1);
-        Storage.addPessoa(instrutor2);
-        Storage.addPessoa(aluno1);
-        Storage.addPessoa(aluno2);
-        Storage.addPessoa(aluno3);
-        Storage.addPessoa(aluno4);
-        Storage.addPessoa(aluno5);
-        Storage.addPessoa(aluno6);
-        Storage.addPessoa(aluno7);
-        Storage.addPessoa(aluno8);
-        Storage.addPessoa(aluno9);
+        Storage.gravarArquivo(Academia.ARQUIVO_ACADEMIA, academia);
+        
+        academia.logout();
+        
+        System.out.println("Academia cadastrada com sucesso.");
 	}
+    
+    private static Academia inicializarAcademiaComValoresPadrao() {
+        Endereco enderecoPadrao = new Endereco(
+            999, 
+            "Rua da Programação", 
+            "101", 
+            "Bloco A", 
+            "Bairro Teste", 
+            "99999-999", 
+            "Cidade Padrão", 
+            "TS"
+        );
+
+        academia = new Academia(
+        	Academia.USER_DEFAULT,
+        	Academia.PWD_DEFAULT,
+            contadorId, 
+            "Academia Giga Fitness", 
+            "(51) 3333-4444", 
+            "www.gigafitness.com.br", 
+            enderecoPadrao,
+            null
+        );
+
+        return academia;
+    }
 }

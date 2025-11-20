@@ -9,8 +9,9 @@ public class Academia implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final String USER_DEFAULT = "admin";
-	private static final String PWD_DEFAULT = "1234";
+	public static final String USER_DEFAULT = "admin";
+	public static final String PWD_DEFAULT = "1234";
+	public static final String ARQUIVO_ACADEMIA = "academia.json";
 	
 	private Usuario usuarioLogado;
 	
@@ -26,7 +27,7 @@ public class Academia implements Serializable {
 	private Pessoa administrador;
     
 	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco, Pessoa administrador) {
-		if (USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password)) {
+		if (validaUsuarioAdminPadrao(login, password)) {
 			this.id = id;
 			this.nome=nome;
 			this.telefone=telefone;
@@ -41,7 +42,7 @@ public class Academia implements Serializable {
 			throw new RuntimeException("Usuário não possui acesso a cadastrar academia");
 		}
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -87,8 +88,10 @@ public class Academia implements Serializable {
 	}
 
 	public void setAdministrador(Pessoa administrador) {
-		Storage.addPessoa(administrador);
-		this.administrador = administrador;
+		if (this.usuarioLogado.isAdministrador()) {
+			Storage.addPessoa(administrador);
+			this.administrador = administrador;			
+		}
 	}
 	
 	//Métodos para login/logout
@@ -146,9 +149,6 @@ public class Academia implements Serializable {
 	
 	public void adicionarAlunos(List<Aluno> alunos) {
 		if (isAdminOuInstrutor()) {
-//			for (int i = 0; i < alunos.size(); i++) {
-//				this.alunos.add(alunos.get(i));
-//			}
 			this.alunos.addAll(alunos);
 		}
 	}
@@ -270,5 +270,9 @@ public class Academia implements Serializable {
 	
 	private boolean isAdminOuInstrutor() {
 		return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
+	}
+	
+	private boolean validaUsuarioAdminPadrao(String login, String password) {
+		return USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password);
 	}
 }
