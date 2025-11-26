@@ -213,7 +213,14 @@ public class Academia implements Serializable {
 
 	public void alterarAparelho(int index, Aparelho novoAparelho) {
 		if (this.usuarioLogado.isAdministrador() && index >= 0 && index < aparelhos.size()) {
-			aparelhos.set(index, novoAparelho);
+			Aparelho atual = aparelhos.get(index);
+			if (atual != null && novoAparelho != null) {
+				atual.setId(novoAparelho.getId());
+				atual.setNome(novoAparelho.getNome());
+				atual.setDescricao(novoAparelho.getDescricao());
+				atual.setFuncao(novoAparelho.getFuncao());
+				atual.setAcademia(novoAparelho.getAcademia());
+			}
 		}
 	}
 

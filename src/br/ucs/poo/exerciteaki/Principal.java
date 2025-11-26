@@ -200,7 +200,9 @@ public class Principal {
                 System.out.println("8. Descricao e funcao do aparelho");
                 System.out.println("9. Gerenciar treinos de alunos"); 
                 System.out.println("10. Imprimir treino");
-                System.out.println("11. Sair");
+                System.out.println("11. Listar alunos");
+                System.out.println("12. Consultar aluno");
+                System.out.println("13. Sair");
                 
                 System.out.print("Escolha uma opção: ");
                 int opcao = scanner.nextInt();
@@ -217,7 +219,9 @@ public class Principal {
                     case 8 -> verDescricaoAparelho();
                     case 9 -> gerenciarTreinos(usuario);
                     case 10 -> escolherTreinoDoDia(usuario);
-                    case 11 -> {
+                    case 11 -> listarAlunos();
+                    case 12 -> consultarAluno();
+                    case 13 -> {
                         logado = false;
                         System.out.println("Logout realizado.");
                     }
@@ -267,7 +271,7 @@ public class Principal {
     }
 
     private static void removerAcademia(Pessoa usuario) {
-        if (usuario instanceof Administrador admin) {
+        if (usuario instanceof Administrador) {
         	Storage.removePessoa(usuario); 
             System.out.println("Academia removida. Encerrando sistema.");
             System.exit(0);
@@ -549,6 +553,90 @@ public class Principal {
                 System.out.println("ID: " + a.getId() + " | Nome: " + a.getNome());
             }
         }
+    }
+
+    private static void listarAlunos() {
+        List<Aluno> alunos = academia.getAlunos();
+        if (alunos == null || alunos.isEmpty()) {
+            System.out.println("Nenhum aluno cadastrado.");
+            return;
+        }
+        System.out.println("\n=== LISTA DE ALUNOS ===");
+        for (int i = 0; i < alunos.size(); i++) {
+            Aluno a = alunos.get(i);
+            System.out.println(i + " - ID: " + a.getId() + " | Nome: " + a.getNome() +
+                               " | Email: " + a.getEmail() + " | Tel: " + a.getTelefone());
+        }
+    }
+
+    private static void consultarAluno() {
+        List<Aluno> alunos = academia.getAlunos();
+        if (alunos == null || alunos.isEmpty()) {
+            System.out.println("Nenhum aluno cadastrado.");
+            return;
+        }
+
+        System.out.println("\nBuscar aluno por:");
+        System.out.println("1. Nome");
+        System.out.println("2. ID");
+        System.out.print("Escolha uma opção: ");
+        String escolha = scanner.nextLine();
+
+        List<Aluno> resultados = new ArrayList<>();
+
+        switch (escolha) {
+            case "1" -> {
+                System.out.print("Digite parte do nome: ");
+                String termo = scanner.nextLine().toLowerCase();
+                for (Aluno a : alunos) {
+                    if (a.getNome() != null && a.getNome().toLowerCase().contains(termo)) {
+                        resultados.add(a);
+                    }
+                }
+            }
+            case "2" -> {
+                try {
+                    System.out.print("Digite o ID: ");
+                    int id = Integer.parseInt(scanner.nextLine());
+                    for (Aluno a : alunos) {
+                        if (a.getId() == id) {
+                            resultados.add(a);
+                            break;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("ID inválido.");
+                    return;
+                }
+            }
+            default -> {
+                System.out.println("Opção inválida.");
+                return;
+            }
+        }
+
+        if (resultados.isEmpty()) {
+            System.out.println("Nenhum aluno encontrado.");
+            return;
+        }
+
+        System.out.println("\n=== RESULTADOS ===");
+        for (Aluno a : resultados) {
+            System.out.println("------------------------------");
+            System.out.println("ID: " + a.getId());
+            System.out.println("Nome: " + a.getNome());
+            System.out.println("Email: " + a.getEmail());
+            System.out.println("Telefone: " + a.getTelefone());
+            System.out.println("Altura: " + a.getAltura());
+            System.out.println("Qtd. Treinos: " + (a.getTreinos() != null ? a.getTreinos().size() : 0));
+            if (a.getTreinos() != null && !a.getTreinos().isEmpty()) {
+                System.out.println("Treinos:");
+                for (Treino t : a.getTreinos()) {
+                    System.out.println(" - [" + t.getId() + "] " + t.getNome() + " | Dia: " + t.getDiaSemana());
+                }
+            }
+        }
+        System.out.println("------------------------------");
     }
     
     private static void verDescricaoAparelho() {
