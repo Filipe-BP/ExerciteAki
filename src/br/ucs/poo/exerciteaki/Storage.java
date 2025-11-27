@@ -84,6 +84,17 @@ abstract class Storage {
 		return s.toString();
 	}
 	
+	public Academia carregarDados() {
+//	    ObjectMapper mapper = new ObjectMapper();
+	    try {
+//	        return mapper.readValue(new File("academia.json"), Academia.class);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+//	        return new Academia(); 
+	    }
+	    return null;
+	}
+	
 	public static void gravarArquivo(String nomeArquivo, List<?> list) {
 		try {
 			FileOutputStream fi = new FileOutputStream(nomeArquivo);
