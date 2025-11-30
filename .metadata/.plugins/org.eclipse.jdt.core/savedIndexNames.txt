@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+C:\Users\vinic\Documents\ucs\poo\trabalho hoje\.metadata\.plugins\org.eclipse.jdt.core
+2928948886.index
+3822152877.index
+1865797976.index
