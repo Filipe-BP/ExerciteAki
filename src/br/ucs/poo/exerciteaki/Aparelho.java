@@ -65,6 +65,15 @@ public class Aparelho implements Serializable {
 	
 	@Override
 	public String toString() {
-	    return "ID: " + id + " | Nome: " + nome;
+	    return String.format(
+	        "ID: %d%n" +
+	        "Nome: %s%n" +
+	        "Função: %s%n" +
+	        "Descrição: %s",
+	        this.id,
+	        this.nome,
+	        this.funcao,
+	        this.descricao
+	    );
 	}
 }

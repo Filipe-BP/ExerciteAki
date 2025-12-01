@@ -1,9 +1,12 @@
 package br.ucs.poo.exerciteaki;
 
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Academia implements Serializable {
 
@@ -228,6 +231,30 @@ public class Academia implements Serializable {
 		return aparelhos;
 	}
 	
+	public Aparelho buscarAparelhoPorId(int id) {
+	    for (Aparelho aparelho : aparelhos) {
+	        if (aparelho.getId() == id) {
+	            return aparelho;
+	        }
+	    }
+	    return null;
+	}
+
+	public List<Aparelho> buscarAparelhosPorNome(String nomeQuery) {
+	    List<Aparelho> resultados = new ArrayList<>();
+	    
+	    String queryNormalizada = normalizarString(nomeQuery);
+	    
+	    for (Aparelho aparelho : aparelhos) {
+	        String nomeAparelhoNormalizado = normalizarString(aparelho.getNome());
+	        
+	        if (nomeAparelhoNormalizado.contains(queryNormalizada)) {
+	            resultados.add(aparelho);
+	        }
+	    }
+	    return resultados;
+	}
+	
 	@Override
 	public String toString() {
 		return "Id: " + id +
@@ -250,16 +277,7 @@ public class Academia implements Serializable {
 	    sb.append("\nEndereço: ").append(endereco.toString());
 
 	    sb.append("\nHorários: ").append(horarios.isEmpty() ? "[]" : horarios);
-
-	    sb.append("\nAlunos:");
-	    if (alunos.isEmpty()) {
-	        sb.append(" Nenhum aluno cadastrado");
-	    } else {
-	        for (Aluno a : alunos) {
-	            sb.append("\n - ").append(a.getNome());
-	        }
-	    }
-
+	    
 	    sb.append("\nInstrutores:");
 	    if (instrutores.isEmpty()) {
 	        sb.append(" Nenhum instrutor cadastrado");
@@ -276,6 +294,62 @@ public class Academia implements Serializable {
 	}
 	
 	private boolean isAdminOuInstrutor() {
-		return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
+	    if (this.usuarioLogado == null) {
+	        return false;
+	    }	    
+	    return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
 	}
+	
+	
+	
+	public Aluno buscarAlunoPorId(int id) {
+	    for (Aluno aluno : alunos) {
+	        if (aluno.getId() == id) {
+	            return aluno;
+	        }
+	    }
+	    return null;
+	}
+
+	public List<Aluno> buscarAlunosPorNome(String nomeQuery) {
+	    List<Aluno> resultados = new ArrayList<>();
+	    String queryNormalizada = normalizarString(nomeQuery);
+	    for (Aluno aluno : alunos) {
+	        String nomeAlunoNormalizado = normalizarString(aluno.getNome());
+	        if (nomeAlunoNormalizado.contains(queryNormalizada)) {
+	            resultados.add(aluno);
+	        }
+	    }
+	    return resultados;
+	}
+	
+	private String normalizarString(String str) {
+	    
+	    String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
+	    String semAcento = normalized.replaceAll("\\p{M}", ""); // \p{M} é uma classe de caracteres que representa marcas de combinação (diacríticos)
+	    return semAcento.toLowerCase();
+	}
+	
+	public boolean registrarSaida() {
+	    
+	    if (usuarioLogado instanceof Aluno alunoLogado) {
+	        
+	        
+	        Frequencia pendente = alunoLogado.getFrequenciaPendente();
+	        
+	        if (pendente != null) {
+	            LocalDateTime now = LocalDateTime.now();
+	            pendente.setDataHoraSaida(now); 	        
+	            String horaSaida = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+	            System.out.println("Saída registrada com sucesso às: " + horaSaida);
+	            return true;
+	        } else {
+	            System.out.println("Aviso: Não havia entrada pendente. Apenas deslogando.");
+	            return false;
+	        }
+	    }
+	    return true; 
+	}
+	
+	
 }

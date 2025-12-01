@@ -1,6 +1,8 @@
 package br.ucs.poo.exerciteaki;
 
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +103,7 @@ public class Aluno extends Pessoa {
             evolucoes.set(index, novaEvolucao);
         }
     }
+    
 
     @Override
     public String toString() {
@@ -110,4 +113,29 @@ public class Aluno extends Pessoa {
                "\nTreinos: " + treinos;
     }
     
+    public void registrarEntrada() {
+        LocalDateTime now = LocalDateTime.now();        
+        Frequencia novaFrequencia = new Frequencia(
+            now.toLocalDate(), 
+            now,               
+            null,             
+            this               
+        );
+        
+        this.adicionarFrequencia(novaFrequencia); 
+    }
+
+    public Frequencia getFrequenciaPendente() {
+        
+        List<Frequencia> historico = this.getFrequencias();
+        for (int i = historico.size() - 1; i >= 0; i--) {
+            Frequencia f = historico.get(i);
+            
+           
+            if (f.getDataHoraSaida() == null) {
+                return f;
+            }
+        }
+        return null;
+    }
 }

@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68955409-8f27-40fe-aefd-2df7807e1d40" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/bin/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/bin/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Academia.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Academia.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aluno.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aluno.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aparelho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Aparelho.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Horario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Horario.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Principal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Principal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Treino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ucs/poo/exerciteaki/Treino.java" afterDir="false" />
     </list>
@@ -21,18 +19,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "guimaraesss"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;guimaraesss&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Filipe-BP/ExerciteAki.git",
-    "accountId": "a8459aa1-39aa-4f3d-a5b4-1ae155abfc7b"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Filipe-BP/ExerciteAki.git&quot;,
+    &quot;accountId&quot;: &quot;a8459aa1-39aa-4f3d-a5b4-1ae155abfc7b&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -49,7 +47,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/vinic/Documents/ucs/poo/trabalho att/ExerciteAki",
+    "last_opened_file_path": "C:/Users/vinic/Documents/ucs2/ExerciteAki",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

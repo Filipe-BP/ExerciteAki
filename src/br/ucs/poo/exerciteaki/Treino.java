@@ -74,4 +74,7 @@ public class Treino implements Serializable {
 		}
 	}
 
+	public void setExercicios(List<Exercicio> exercicios) {
+	    this.exercicios = exercicios;
+	}
 }
