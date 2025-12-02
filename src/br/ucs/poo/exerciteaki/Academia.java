@@ -226,6 +226,18 @@ public class Academia implements Serializable {
 			}
 		}
 	}
+	
+	public void alterarAparelhoPorId(int id, Aparelho novoAparelho) {
+	    for (int i = 0; i < aparelhos.size(); i++) {
+	        if (aparelhos.get(i).getId() == id) {
+	            aparelhos.set(i, novoAparelho);
+	            System.out.println("Aparelho com ID " + id + " alterado com sucesso.");
+	            return;
+	        }
+	    }
+	    System.out.println("Aparelho com ID " + id + " não encontrado.");
+	}
+
 
 	public List<Aparelho> getAparelhos() {
 		return aparelhos;

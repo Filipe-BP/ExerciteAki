@@ -223,17 +223,15 @@ public class Principal {
         System.out.println("Tipo de usuário: Administrador");
         boolean logado = true;
         while (logado) {
-            System.out.println("\n=== MENU ADMINISTRADOR ===");
-            System.out.println("1. Gerenciar Horários (Add/Alt/Rem)");
-            System.out.println("2. Gerenciar Aparelhos (Cad/Alt/Rem)");
-            System.out.println("--- Gestão da Academia ---");
-            System.out.println("3. Consultar dados da academia");
-            System.out.println("4. Alterar dados da academia");
-            System.out.println("5. REMOVER ACADEMIA (SAIR DO SISTEMA)");
-            System.out.println("--- Visualização ---");
-            System.out.println("6. Listar Horários");
+            System.out.println("\n=== MENU ===");
+            System.out.println("1. Gerenciar Horários");
+            System.out.println("2. Gerenciar Aparelhos");
+            System.out.println("3. Dados da academia");
+            System.out.println("4. Alterar Dados da Academia");
+            System.out.println("5. EXCLUIR ACADEMIA ");
+            System.out.println("6. Horários de Funcionamento");
             System.out.println("7. Consultar Aparelhos");
-            System.out.println("8. Listar Alunos e Consultar");
+            System.out.println("8. Consultar Alunos");
             System.out.println("9. Sair (Logout)");
             
             System.out.print("Escolha uma opção: ");
@@ -245,7 +243,7 @@ public class Principal {
                 case 2 -> gerenciarAparelhos(admin);             
                 case 3 -> consultarAcademia(admin);
                 case 4 -> alterarAcademia(admin);
-                case 5 -> removerAcademia(admin); // Tem System.exit(0)
+                case 5 -> removerAcademia(admin); 
                 case 6 -> listarHorarios(); 
                 case 7 -> consultarAparelhoPersonalizado();
                 case 8 -> consultarAlunoPersonalizado();
@@ -644,7 +642,14 @@ public class Principal {
             System.out.println("4. Voltar");
 
             System.out.print("Escolha uma opção: ");
-            int opcao = Integer.parseInt(scanner.nextLine());
+
+            int opcao;
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número.");
+                continue; // volta para o início do while
+            }
 
             switch (opcao) {
                 case 1 -> cadastrarAparelho(usuario);
@@ -655,6 +660,7 @@ public class Principal {
             }
         }
     }
+
     
     
     private static void cadastrarAparelho(Pessoa usuario) {
@@ -692,34 +698,61 @@ public class Principal {
             return;
         }
 
-        for (int i = 0; i < aparelhos.size(); i++) {
-            System.out.println(i + " - " + aparelhos.get(i));
+        Aparelho aparelho = null;
+        boolean continuar = true;
+
+        
+        while (continuar && aparelho == null) {
+            System.out.println("\n=== SELEÇÃO DE APARELHO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> aparelho = selecionarAparelhoPorId();
+                case 2 -> aparelho = selecionarAparelhoPorNome();
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
+            }
         }
 
-        System.out.print("Escolha o índice do aparelho a alterar: ");
-        int index = Integer.parseInt(scanner.nextLine());
-
-        if (index < 0 || index >= aparelhos.size()) {
-            System.out.println("Índice inválido.");
+        if (aparelho == null) {
+            System.out.println("Nenhum aparelho selecionado.");
             return;
         }
 
-        System.out.print("Novo nome: ");
+        
+        System.out.print("Novo nome (atual: " + aparelho.getNome() + "): ");
         String novoNome = scanner.nextLine();
 
-        System.out.print("Nova descrição: ");
+        System.out.print("Nova descrição (atual: " + aparelho.getDescricao() + "): ");
         String novaDescricao = scanner.nextLine();
 
-        System.out.print("Nova função: ");
+        System.out.print("Nova função (atual: " + aparelho.getFuncao() + "): ");
         String novaFuncao = scanner.nextLine();
 
-        int id = aparelhos.get(index).getId(); // mantém o mesmo ID
+        int id = aparelho.getId(); // mantém o mesmo ID
 
         Aparelho novo = new Aparelho(id, novoNome, novaDescricao, novaFuncao, academia);
-        academia.alterarAparelho(index, novo);
+        academia.alterarAparelhoPorId(id, novo); 
 
         System.out.println("Aparelho alterado com sucesso.");
     }
+
     
     private static void removerAparelho(Pessoa usuario) {
         if (usuario instanceof Aluno) {
@@ -733,30 +766,81 @@ public class Principal {
             return;
         }
 
-        System.out.println("\n=== APARELHOS CADASTRADOS ===");
-        for (Aparelho a : aparelhos) {
-            System.out.println("ID: " + a.getId() + " | Nome: " + a.getNome());
-        }
+        Aparelho aparelho = null;
+        boolean continuar = true;
 
-        System.out.print("Digite o ID do aparelho a remover: ");
-        int idBusca = Integer.parseInt(scanner.nextLine());
+        // Seleção de aparelho com filtro por ID ou Nome
+        while (continuar && aparelho == null) {
+            System.out.println("\n=== SELEÇÃO DE APARELHO PARA REMOÇÃO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
 
-        Aparelho aparelhoRemovido = null;
-        for (Aparelho a : aparelhos) {
-            if (a.getId() == idBusca) {
-                aparelhoRemovido = a;
-                break;
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> {
+                    System.out.print("Digite o ID do aparelho: ");
+                    if (scanner.hasNextInt()) {
+                        int id = scanner.nextInt();
+                        scanner.nextLine();
+                        aparelho = academia.buscarAparelhoPorId(id);
+                        if (aparelho == null) {
+                            System.out.println("Aparelho com ID " + id + " não encontrado.");
+                        }
+                    } else {
+                        System.out.println("ID inválido.");
+                        scanner.nextLine();
+                    }
+                }
+                case 2 -> {
+                    System.out.print("Digite parte ou o nome completo do aparelho: ");
+                    String nomeQuery = scanner.nextLine();
+                    List<Aparelho> resultados = academia.buscarAparelhosPorNome(nomeQuery);
+
+                    if (!resultados.isEmpty()) {
+                        System.out.println("\n--- APARELHOS ENCONTRADOS ---");
+                        for (int i = 0; i < resultados.size(); i++) {
+                            Aparelho a = resultados.get(i);
+                            System.out.println(i + " - ID: " + a.getId() + ", Nome: " + a.getNome());
+                        }
+                        System.out.print("Escolha o índice: ");
+                        int idx = Integer.parseInt(scanner.nextLine());
+                        if (idx >= 0 && idx < resultados.size()) {
+                            aparelho = resultados.get(idx);
+                        } else {
+                            System.out.println("Índice inválido.");
+                        }
+                    } else {
+                        System.out.println("Nenhum aparelho encontrado.");
+                    }
+                }
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
             }
         }
 
-        if (aparelhoRemovido == null) {
-            System.out.println("Nenhum aparelho encontrado com esse ID.");
+        if (aparelho == null) {
+            System.out.println("Nenhum aparelho selecionado.");
             return;
         }
 
-        academia.removerAparelho(aparelhoRemovido);
-        System.out.println("Aparelho removido com sucesso.");
+        academia.removerAparelho(aparelho);
+        System.out.println("Aparelho removido com sucesso: " + aparelho.getNome());
     }
+
     
     private static void listarAparelhos() {
         List<Aparelho> aparelhos = academia.getAparelhos();
@@ -959,6 +1043,9 @@ public class Principal {
             System.out.println("Nenhum aparelho encontrado com o nome '" + nomeQuery + "'.");
         }
     }
+    
+
+
 
     private static void consultarAparelhoPersonalizado() {
         boolean continuarConsultando = true;
@@ -1031,6 +1118,54 @@ public class Principal {
             }
         } else {
             System.out.println("Nenhum aluno encontrado.");
+        }
+        return null;
+    }
+    
+    private static Aparelho selecionarAparelhoPorId() {
+        System.out.print("Digite o ID do aparelho: ");
+        if (scanner.hasNextInt()) {
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            for (Aparelho a : academia.getAparelhos()) {
+                if (a.getId() == id) {
+                    System.out.println("Aparelho encontrado: " + a.getNome());
+                    return a;
+                }
+            }
+            System.out.println("Nenhum aparelho encontrado com ID " + id);
+        } else {
+            System.out.println("ID inválido.");
+            scanner.nextLine();
+        }
+        return null;
+    }
+
+    private static Aparelho selecionarAparelhoPorNome() {
+        System.out.print("Digite parte ou o nome completo do aparelho: ");
+        String nomeQuery = scanner.nextLine().toLowerCase();
+        List<Aparelho> resultados = new ArrayList<>();
+        for (Aparelho a : academia.getAparelhos()) {
+            if (a.getNome().toLowerCase().contains(nomeQuery)) {
+                resultados.add(a);
+            }
+        }
+
+        if (!resultados.isEmpty()) {
+            System.out.println("\n--- APARELHOS ENCONTRADOS ---");
+            for (int i = 0; i < resultados.size(); i++) {
+                Aparelho a = resultados.get(i);
+                System.out.println(i + " - ID: " + a.getId() + ", Nome: " + a.getNome());
+            }
+            System.out.print("Escolha o índice: ");
+            int idx = Integer.parseInt(scanner.nextLine());
+            if (idx >= 0 && idx < resultados.size()) {
+                return resultados.get(idx);
+            } else {
+                System.out.println("Índice inválido.");
+            }
+        } else {
+            System.out.println("Nenhum aparelho encontrado.");
         }
         return null;
     }
