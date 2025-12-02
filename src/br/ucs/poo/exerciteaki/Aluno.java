@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Aluno extends Pessoa {
 	
 	private static final long serialVersionUID = 1L;
@@ -125,8 +127,7 @@ public class Aluno extends Pessoa {
         this.adicionarFrequencia(novaFrequencia); 
     }
     
-    
-
+    @JsonIgnore
     public Frequencia getFrequenciaPendente() {
         
         List<Frequencia> historico = this.getFrequencias();
