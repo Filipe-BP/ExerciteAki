@@ -992,6 +992,52 @@ public class Principal {
         }
     }
     
+    private static Aluno selecionarAlunoPorId() {
+        System.out.print("Digite o ID do aluno: ");
+        if (scanner.hasNextInt()) {
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            Aluno aluno = academia.buscarAlunoPorId(id);
+            if (aluno != null) {
+                System.out.println("Aluno encontrado: " + aluno.getNome());
+                return aluno;
+            } else {
+                System.out.println("Aluno com ID " + id + " não encontrado.");
+            }
+        } else {
+            System.out.println("ID inválido.");
+            scanner.nextLine();
+        }
+        return null;
+    }
+
+    private static Aluno selecionarAlunoPorNome() {
+        System.out.print("Digite parte ou o nome completo do aluno: ");
+        String nomeQuery = scanner.nextLine();
+        List<Aluno> resultados = academia.buscarAlunosPorNome(nomeQuery);
+
+        if (!resultados.isEmpty()) {
+            System.out.println("\n--- ALUNOS ENCONTRADOS ---");
+            for (int i = 0; i < resultados.size(); i++) {
+                Aluno a = resultados.get(i);
+                System.out.println(i + " - ID: " + a.getId() + ", Nome: " + a.getNome());
+            }
+            System.out.print("Escolha o índice: ");
+            int idx = Integer.parseInt(scanner.nextLine());
+            if (idx >= 0 && idx < resultados.size()) {
+                return resultados.get(idx);
+            } else {
+                System.out.println("Índice inválido.");
+            }
+        } else {
+            System.out.println("Nenhum aluno encontrado.");
+        }
+        return null;
+    }
+
+
+    
+    
     private static void gerenciarTreinos(Pessoa usuario) {
         if (!(usuario instanceof Instrutor instrutor)) {
             System.out.println("Apenas instrutores podem gerenciar treinos.");
@@ -1161,30 +1207,47 @@ public class Principal {
     }
     
     private static void adicionarTreinoParaAluno(Instrutor instrutor) {
-        List<Aluno> alunos = academia.getAlunos();
-        if (alunos.isEmpty()) {
-            System.out.println("Nenhum aluno cadastrado.");
+        Aluno aluno = null;
+        boolean continuar = true;
+
+        // Seleção de aluno com filtro por ID ou Nome
+        while (continuar && aluno == null) {
+            System.out.println("\n=== SELEÇÃO DE ALUNO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> aluno = selecionarAlunoPorId();
+                case 2 -> aluno = selecionarAlunoPorNome();
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+
+        if (aluno == null) {
+            System.out.println("Nenhum aluno selecionado.");
             return;
         }
-
-        System.out.println("\n=== ALUNOS DISPONÍVEIS ===");
-        for (int i = 0; i < alunos.size(); i++) {
-            System.out.println(i + " - " + alunos.get(i).getNome());
-        }
-
-        System.out.print("Escolha o índice do aluno: ");
-        int indexAluno = Integer.parseInt(scanner.nextLine());
-        if (indexAluno < 0 || indexAluno >= alunos.size()) {
-            System.out.println("Índice inválido.");
-            return;
-        }
-
-        Aluno aluno = alunos.get(indexAluno);
 
         System.out.print("Nome do treino: ");
         String nomeTreino = scanner.nextLine();
 
-        System.out.print("Dia da semana (1=Segunda, ..., 7=Domingo): ");
+        System.out.print("Dia da semana: \n1. Segunda\n2. Terça\n3. Quarta\n4. Quinta\n5. Sexta\n6. Sabado\n7. Domingo: ");
         int diaSemana = Integer.parseInt(scanner.nextLine());
 
         int idTreino = aluno.getTreinos().size();
@@ -1233,16 +1296,47 @@ public class Principal {
         instrutor.adicionarTreino(treino);
         System.out.println("Treino adicionado com sucesso para " + aluno.getNome());
     }
+
     
     private static void alterarTreinoDeAluno(Instrutor instrutor) {
-        
-        
-        Aluno aluno = selecionarAlunoParaAlteracao();
+        Aluno aluno = null;
+        boolean continuar = true;
+
+        // Seleção de aluno com filtro por ID ou Nome
+        while (continuar && aluno == null) {
+            System.out.println("\n=== SELEÇÃO DE ALUNO PARA ALTERAÇÃO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> aluno = selecionarAlunoPorId();
+                case 2 -> aluno = selecionarAlunoPorNome();
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+
         if (aluno == null) {
+            System.out.println("Nenhum aluno selecionado.");
             return;
         }
 
-        
+        // --- TREINOS DO ALUNO ---
         List<Treino> treinos = aluno.getTreinos();
         if (treinos.isEmpty()) {
             System.out.println("Esse aluno não possui treinos.");
@@ -1252,9 +1346,9 @@ public class Principal {
         System.out.println("\n=== TREINOS DO ALUNO ===");
         for (int i = 0; i < treinos.size(); i++) {
             Treino t = treinos.get(i);
-            String exerciciosAtuais = (t.getExercicios() != null && !t.getExercicios().isEmpty()) 
-                                   ? "(" + t.getExercicios().size() + " exercícios)" 
-                                   : "(Nenhum exercício)";
+            String exerciciosAtuais = (t.getExercicios() != null && !t.getExercicios().isEmpty())
+                    ? "(" + t.getExercicios().size() + " exercícios)"
+                    : "(Nenhum exercício)";
             System.out.printf("[%d] %s %s%n", i, t.getNome(), exerciciosAtuais);
         }
 
@@ -1267,7 +1361,7 @@ public class Principal {
 
         Treino treino = treinos.get(indexTreino);
 
-        // 3. ALTERAÇÃO DE PROPRIEDADES BÁSICAS
+        // --- ALTERAÇÃO DE PROPRIEDADES BÁSICAS ---
         System.out.print("Novo nome do treino (atual: " + treino.getNome() + "): ");
         String novoNome = scanner.nextLine();
         treino.setNome(novoNome);
@@ -1275,27 +1369,26 @@ public class Principal {
         System.out.print("Novo dia da semana (atual: " + treino.getDiaSemana() + "):\n1. Segunda\n2. Terça\n3. Quarta\n4. Quinta\n5. Sexta\n6. Sabado\n7. Domingo: ");
         int novoDia = Integer.parseInt(scanner.nextLine());
         treino.setDiaSemana(novoDia);
-        
-        // 4. ALTERAÇÃO DE EXERCÍCIOS
+
+        // --- ALTERAÇÃO DE EXERCÍCIOS ---
         List<Exercicio> listaExercicios = treino.getExercicios();
-        
+
         if (listaExercicios.isEmpty()) {
-            System.out.println("\nO treino não possui exercícios. Adicione um.");         
+            System.out.println("\nO treino não possui exercícios. Adicione um.");
             System.out.print("Deseja ADICIONAR uma lista de exercícios agora? (s/n): ");
             if (scanner.nextLine().equalsIgnoreCase("s")) {
-                 List<Exercicio> novosExercicios = criarNovaListaDeExercicios();
-                 treino.setExercicios(novosExercicios);
+                List<Exercicio> novosExercicios = criarNovaListaDeExercicios();
+                treino.setExercicios(novosExercicios);
             }
         } else {
             boolean alterandoExercicios = true;
-            while(alterandoExercicios) {
+            while (alterandoExercicios) {
                 System.out.println("\n--- OPÇÕES DE EXERCÍCIOS PARA " + aluno.getNome() + " / TREINO: " + treino.getNome() + " ---");
-                
-                
+
                 for (int i = 0; i < listaExercicios.size(); i++) {
                     Exercicio e = listaExercicios.get(i);
-                    System.out.printf("[%d] %s - Carga: %.1fkg, Reps: %d%n", 
-                        i, e.getAparelho().getNome(), e.getCarga(), e.getNumeroRepeticoes());
+                    System.out.printf("[%d] %s - Carga: %.1fkg, Reps: %d%n",
+                            i, e.getAparelho().getNome(), e.getCarga(), e.getNumeroRepeticoes());
                 }
 
                 System.out.println("\nEscolha a ação:");
@@ -1308,32 +1401,23 @@ public class Principal {
                     int opcaoExercicio = Integer.parseInt(scanner.nextLine());
 
                     switch (opcaoExercicio) {
-                        case 1: 
+                        case 1 -> {
                             System.out.print("Digite o ÍNDICE do exercício que deseja alterar: ");
                             int indexAlterar = Integer.parseInt(scanner.nextLine());
-                            
+
                             if (indexAlterar >= 0 && indexAlterar < listaExercicios.size()) {
-                                
                                 alterarExercicioIndividualmente(listaExercicios.get(indexAlterar));
                             } else {
                                 System.out.println("Índice de exercício inválido.");
                             }
-                            break;
-                            
-                        case 2: 
+                        }
+                        case 2 -> {
                             List<Exercicio> novosExercicios = criarNovaListaDeExercicios();
-                            
-                            listaExercicios.addAll(novosExercicios); 
-                            System.out.println(" Novos exercícios adicionados ao treino.");
-                            break;
-                            
-                        case 3: // VOLTAR
-                            alterandoExercicios = false;
-                            break;
-                            
-                        default:
-                            System.out.println("Opção inválida.");
-                            break;
+                            listaExercicios.addAll(novosExercicios);
+                            System.out.println("Novos exercícios adicionados ao treino.");
+                        }
+                        case 3 -> alterandoExercicios = false;
+                        default -> System.out.println("Opção inválida.");
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("Entrada inválida. Digite um número.");
@@ -1341,30 +1425,48 @@ public class Principal {
             }
         }
 
-        System.out.println("\n Treino alterado com sucesso!");
+        System.out.println("\nTreino alterado com sucesso!");
     }
+
     
     
     private static void removerTreinoDeAluno(Instrutor instrutor) {
-        List<Aluno> alunos = academia.getAlunos();
-        if (alunos.isEmpty()) {
-            System.out.println("Nenhum aluno cadastrado.");
+        Aluno aluno = null;
+        boolean continuar = true;
+
+        while (continuar && aluno == null) {
+            System.out.println("\n=== SELEÇÃO DE ALUNO PARA REMOÇÃO DE TREINO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> aluno = selecionarAlunoPorId();
+                case 2 -> aluno = selecionarAlunoPorNome();
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+
+        if (aluno == null) {
+            System.out.println("Nenhum aluno selecionado.");
             return;
         }
 
-        System.out.println("\n=== ALUNOS DISPONÍVEIS ===");
-        for (int i = 0; i < alunos.size(); i++) {
-            System.out.println(i + " - " + alunos.get(i).getNome());
-        }
-
-        System.out.print("Escolha o índice do aluno: ");
-        int indexAluno = Integer.parseInt(scanner.nextLine());
-        if (indexAluno < 0 || indexAluno >= alunos.size()) {
-            System.out.println("Índice inválido.");
-            return;
-        }
-
-        Aluno aluno = alunos.get(indexAluno);
         List<Treino> treinos = aluno.getTreinos();
         if (treinos.isEmpty()) {
             System.out.println("Esse aluno não possui treinos.");
@@ -1386,9 +1488,8 @@ public class Principal {
         Treino treinoRemovido = treinos.get(indexTreino);
         aluno.removerTreino(treinoRemovido);
         instrutor.removerTreino(treinoRemovido);
-        System.out.println("Treino removido com sucesso.");
+        System.out.println("Treino removido com sucesso para " + aluno.getNome());
     }
-    
     
     private static void escolherTreinoDoDia(Pessoa usuario) {
         if (!(usuario instanceof Aluno aluno)) {
@@ -1396,7 +1497,7 @@ public class Principal {
             return;
         }
 
-        System.out.print("Informe o dia da semana \n1. Segunda\n2. Terça\n3. Quarta\n4. Quinta\n5. Sexta\n7.Sabado\n7=Domingo): ");
+        System.out.print("Informe o dia da semana: \n1. Segunda\n2. Terça\n3. Quarta\n4. Quinta\n5. Sexta\n6. Sabado\n7. Domingo): ");
         int dia = Integer.parseInt(scanner.nextLine());
 
         List<Treino> treinosDoDia = new ArrayList<Treino>();
