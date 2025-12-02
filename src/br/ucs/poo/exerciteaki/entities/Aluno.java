@@ -1,4 +1,4 @@
-package br.ucs.poo.exerciteaki;
+package br.ucs.poo.exerciteaki.entities;
 
 import java.util.Date;
 import java.time.LocalDateTime;

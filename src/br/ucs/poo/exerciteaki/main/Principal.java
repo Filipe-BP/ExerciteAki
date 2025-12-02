@@ -1,4 +1,4 @@
-package br.ucs.poo.exerciteaki;
+package br.ucs.poo.exerciteaki.main;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,6 +15,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import br.ucs.poo.exerciteaki.entities.Academia;
+import br.ucs.poo.exerciteaki.entities.Administrador;
+import br.ucs.poo.exerciteaki.entities.Aluno;
+import br.ucs.poo.exerciteaki.entities.Aparelho;
+import br.ucs.poo.exerciteaki.entities.Endereco;
+import br.ucs.poo.exerciteaki.entities.Evolucao;
+import br.ucs.poo.exerciteaki.entities.Exercicio;
+import br.ucs.poo.exerciteaki.entities.Formacao;
+import br.ucs.poo.exerciteaki.entities.Frequencia;
+import br.ucs.poo.exerciteaki.entities.Horario;
+import br.ucs.poo.exerciteaki.entities.Instrutor;
+import br.ucs.poo.exerciteaki.entities.Pessoa;
+import br.ucs.poo.exerciteaki.entities.Treino;
+import br.ucs.poo.exerciteaki.entities.Usuario;
+import br.ucs.poo.exerciteaki.file.Storage;
 import br.ucs.poo.exerciteaki.utils.Utils;
 
 public class Principal {
@@ -569,8 +584,12 @@ public class Principal {
 
 	private static void removerAcademia(Pessoa usuario) {
 		if (usuario instanceof Administrador) {
-			System.out.println("Academia removida. Encerrando sistema.");
-			System.exit(0);
+			boolean sucesso = Storage.deletarArquivo();
+			if (sucesso) {
+				System.out.println("Academia removida. Encerrando sistema.");
+				System.exit(0);
+			}
+			System.out.println("Erro ao remover academia. Tente novamente mais tarde");
 		} else {
 			System.out.println("Acesso negado. Apenas administradores podem remover a academia.");
 		}

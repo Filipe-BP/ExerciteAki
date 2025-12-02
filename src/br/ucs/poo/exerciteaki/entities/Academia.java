@@ -1,4 +1,4 @@
-package br.ucs.poo.exerciteaki;
+package br.ucs.poo.exerciteaki.entities;
 
 import static br.ucs.poo.exerciteaki.utils.Utils.equalsIgnoreCase;
 import static br.ucs.poo.exerciteaki.utils.Utils.isEmpty;
@@ -7,12 +7,14 @@ import static br.ucs.poo.exerciteaki.utils.Utils.isNotNull;
 
 import java.io.Serializable;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import br.ucs.poo.exerciteaki.file.Storage;
 
 public class Academia implements Serializable {
 

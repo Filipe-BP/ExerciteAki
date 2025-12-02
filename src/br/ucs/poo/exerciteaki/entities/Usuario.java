@@ -1,6 +1,6 @@
-package br.ucs.poo.exerciteaki;
+package br.ucs.poo.exerciteaki.entities;
 
-abstract class Usuario {
+public abstract class Usuario {
 	
 	private String login;
 	private String password;

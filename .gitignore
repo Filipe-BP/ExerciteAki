@@ -1,1 +1,11 @@
+# Arquivos de compilação do Eclipse (Bytecode)
 /bin/
+
+# Arquivos de configuração do Eclipse
+.project
+.classpath
+.settings/
+
+# Arquivos de log e temporários
+*.log
+tmp/

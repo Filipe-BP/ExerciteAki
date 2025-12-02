@@ -1,10 +1,12 @@
-package br.ucs.poo.exerciteaki;
+package br.ucs.poo.exerciteaki.file;
 
 import java.io.File;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-abstract class Storage {
+import br.ucs.poo.exerciteaki.entities.Academia;
+
+public abstract class Storage {
 	
 	public static final String FILE_NAME = "academia.json";
 	
@@ -34,6 +36,14 @@ abstract class Storage {
 	public static boolean arquivoExiste() {
 		File f = new File(FILE_NAME);
 		return f.exists();
+	}
+	
+	public static boolean deletarArquivo() {
+		File f = new File(FILE_NAME);
+		if (f.exists()) {
+			return f.delete();
+		} 
+		return false;
 	}
 	
 }
