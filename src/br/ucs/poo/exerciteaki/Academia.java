@@ -143,11 +143,13 @@ public class Academia implements Serializable {
 		}
 		
 		if (isNotEmpty(this.alunos)) {
-			return getAlunoByLoginAndPass(login, password);
+			Aluno existent = getAlunoByLoginAndPass(login, password);
+			if (isNotNull(existent)) return existent;
 		}
 		
 		if (isNotEmpty(this.instrutores)) {
-			return getInstrutorByLoginAndPass(login, password);
+			Instrutor existent = getInstrutorByLoginAndPass(login, password);
+			if (isNotNull(existent)) return existent;
 		}
 		
 		throw new RuntimeException("Usuário não encontrado");

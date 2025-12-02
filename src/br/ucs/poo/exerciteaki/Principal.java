@@ -23,7 +23,7 @@ public class Principal {
 	private static int contadorId = 1;
 	private static Academia academia;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		inicializarAcademia();
 
 		boolean ativo = true;
