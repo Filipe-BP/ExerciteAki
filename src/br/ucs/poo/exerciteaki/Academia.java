@@ -1,9 +1,15 @@
 package br.ucs.poo.exerciteaki;
 
+import static br.ucs.poo.exerciteaki.utils.Utils.equalsIgnoreCase;
+import static br.ucs.poo.exerciteaki.utils.Utils.isEmpty;
+import static br.ucs.poo.exerciteaki.utils.Utils.isNotEmpty;
+import static br.ucs.poo.exerciteaki.utils.Utils.isNotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Academia implements Serializable {
 
@@ -11,9 +17,9 @@ public class Academia implements Serializable {
 	
 	public static final String USER_DEFAULT = "admin";
 	public static final String PWD_DEFAULT = "1234";
-	public static final String ARQUIVO_ACADEMIA = "academia.json";
 	
-	private Usuario usuarioLogado;
+	@JsonIgnore
+	private transient Usuario usuarioLogado;
 	
 	private int id;
 	private String nome;
@@ -24,16 +30,33 @@ public class Academia implements Serializable {
 	private List<Aluno> alunos;
 	private List<Instrutor> instrutores;
 	private List<Aparelho> aparelhos;
-	private Pessoa administrador;
+	private Administrador administrador;
+	
+	public Academia() {}
     
-	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco, Pessoa administrador) {
+	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco) {
 		if (validaUsuarioAdminPadrao(login, password)) {
 			this.id = id;
 			this.nome=nome;
 			this.telefone=telefone;
 			this.website=website;
 			this.endereco=endereco;
-			this.administrador = administrador;
+			this.horarios = new ArrayList<>();
+			this.alunos = new ArrayList<>();
+			this.instrutores = new ArrayList<>();
+			this.aparelhos = new ArrayList<>();
+		} else {
+			throw new RuntimeException("Usuário não possui acesso a cadastrar academia");
+		}
+	}
+	
+	public Academia(int id, String nome, String telefone, String website, Endereco endereco, Administrador administrador) {
+		if (isNotNull(administrador)) {
+			this.id = id;
+			this.nome=nome;
+			this.telefone=telefone;
+			this.website=website;
+			this.endereco=endereco;
 			this.horarios = new ArrayList<>();
 			this.alunos = new ArrayList<>();
 			this.instrutores = new ArrayList<>();
@@ -87,22 +110,48 @@ public class Academia implements Serializable {
 		return administrador;
 	}
 
-	public void setAdministrador(Pessoa administrador) {
-		if (this.usuarioLogado.isAdministrador()) {
-			Storage.addPessoa(administrador);
+	public void setAdministrador(Administrador administrador) {
+		if (validaUsuarioAdminPadrao(administrador.getLogin(), administrador.getPassword()) 
+				|| (isNotNull(this.usuarioLogado) && this.usuarioLogado.isAdministrador())) {
 			this.administrador = administrador;			
 		}
 	}
 	
 	//Métodos para login/logout
 	public void login(String login, String password) {
-		if (usuarioLogado != null) {
+		if (this.usuarioLogado != null) {
 			return; // já possui usuário logado, efetuar logout
 		}
-		Object user = Storage.findUsuario(login, password);
+		Usuario user = getUsuario(login, password);
 		if (user != null) {
-			usuarioLogado = (Usuario) user;
+			this.usuarioLogado = user;
 		}
+	}
+	
+	public Object getPessoa(String login, String password) {
+		if (isEmpty(password) || isEmpty(login)) {
+			throw new RuntimeException("Usuário ou senha inválidos");
+		}
+		
+		if (isNotNull(this.administrador) 
+				&& equalsIgnoreCase(login, this.administrador.getLogin()) 
+				&& equalsIgnoreCase(password, this.administrador.getPassword())) {
+			return this.administrador;
+		}
+		
+		if (isNotEmpty(this.alunos)) {
+			return getAlunoByLoginAndPass(login, password);
+		}
+		
+		if (isNotEmpty(this.instrutores)) {
+			return getInstrutorByLoginAndPass(login, password);
+		}
+		
+		throw new RuntimeException("Usuário não encontrado!");
+	}
+	
+	public Usuario getUsuario(String login, String password) {
+		return (Usuario) this.getPessoa(login, password);
 	}
 	
 	public Usuario getUsuarioLogado() {
@@ -111,6 +160,7 @@ public class Academia implements Serializable {
 	
 	public void logout() {
 		usuarioLogado = null;
+		Storage.salvarDados(this);
 	}
 	
 	// Métodos para Horarios
@@ -168,7 +218,18 @@ public class Academia implements Serializable {
 	public List<Aluno> getAlunos() {
 		return alunos;
 	}
-
+	
+	public Aluno getAlunoByLoginAndPass(String login, String password) {
+		for (int i = 0; i < this.alunos.size(); i++) {
+			if (this.alunos.get(i) != null 
+					&& equalsIgnoreCase(login, this.alunos.get(i).getLogin())
+					&& equalsIgnoreCase(password, this.alunos.get(i).getPassword())) {
+				return this.alunos.get(i);
+			}
+		}	
+		return null;
+	}
+	
 	// Métodos para Instrutores
 	public void adicionarInstrutor(Instrutor instrutor) {
 		if (this.usuarioLogado.isAdministrador()) {
@@ -196,6 +257,17 @@ public class Academia implements Serializable {
 
 	public List<Instrutor> getInstrutores() {
 		return instrutores;
+	}
+	
+	public Instrutor getInstrutorByLoginAndPass(String login, String password) {
+		for (int i = 0; i < this.instrutores.size(); i++) {
+			if (this.instrutores.get(i) != null 
+					&& equalsIgnoreCase(login, this.instrutores.get(i).getLogin())
+					&& equalsIgnoreCase(password, this.instrutores.get(i).getPassword())) {
+				return this.instrutores.get(i);
+			}
+		}
+		return null;
 	}
 
 	// Métodos para Aparelhos
@@ -273,6 +345,6 @@ public class Academia implements Serializable {
 	}
 	
 	private boolean validaUsuarioAdminPadrao(String login, String password) {
-		return USER_DEFAULT.equalsIgnoreCase(login) && PWD_DEFAULT.equalsIgnoreCase(password);
+		return equalsIgnoreCase(login, USER_DEFAULT) && equalsIgnoreCase(password, PWD_DEFAULT);
 	}
 }

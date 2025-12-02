@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Frequencia implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -11,6 +13,8 @@ public class Frequencia implements Serializable {
 	private LocalDate data;
 	private LocalDateTime dataHoraEntrada;
 	private LocalDateTime dataHoraSaida;
+	
+	@JsonIgnore
 	private Aluno aluno;
 	
 	public Frequencia() {}

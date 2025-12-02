@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Horario implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -11,11 +13,11 @@ public class Horario implements Serializable {
 	private String diaSemana;
 	private Date horaAbertura;
 	private Date horaFechamento;
+	
+	@JsonIgnore
 	private Academia academia;
 	
-	public Horario() {
-		
-	}
+	public Horario() {}
 	
 	public Horario(String diaSemana, Date horaAbertura, Date horaFechamento, Academia academia) {
 		this.diaSemana=diaSemana;

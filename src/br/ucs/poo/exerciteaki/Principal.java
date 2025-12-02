@@ -42,62 +42,12 @@ public class Principal {
     private static void inicializarAcademia() {
         System.out.println("-------- Bem-vindo(a) ao ExerciteAki --------");
         
-        boolean criaDadosDeTeste = !Storage.arquivoExiste(Academia.ARQUIVO_ACADEMIA);
+        boolean criaDadosDeTeste = !Storage.arquivoExiste();
         if (criaDadosDeTeste) {
         	preencherSistemaComDadosDeTeste();
 		} else {
-			throw new RuntimeException("IMPLEMENTAR!");
+			academia = Storage.carregarDados();
 		}
-        
-//        System.out.print("Login do administrador padrão: ");
-//        String login = scanner.nextLine();
-//
-//        System.out.print("Senha do administrador padrão: ");
-//        String senha = scanner.nextLine();
-        
-//        System.out.print("Nome da academia: ");
-//        String nome = scanner.nextLine();
-//
-//        System.out.print("Telefone: ");
-//        String telefone = scanner.nextLine();
-//
-//        System.out.print("Website: ");
-//        String website = scanner.nextLine();
-//
-//        System.out.println("=== Endereço da academia ===");
-//        System.out.print("ID: ");
-//        int idEndereco = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        System.out.print("Logradouro: ");
-//        String logradouro = scanner.nextLine();
-//
-//        System.out.print("Número: ");
-//        String numero = scanner.nextLine();
-//
-//        System.out.print("Complemento: ");
-//        String complemento = scanner.nextLine();
-//
-//        System.out.print("Bairro: ");
-//        String bairro = scanner.nextLine();
-//
-//        System.out.print("CEP: ");
-//        String cep = scanner.nextLine();
-//
-//        System.out.print("Cidade: ");
-//        String cidade = scanner.nextLine();
-//
-//        System.out.print("Estado: ");
-//        String estado = scanner.nextLine();
-
-//        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
-//        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", null, null);
-//
-//        academia = new Academia(login, senha, 1, nome, telefone, website, endereco, admin);
-//        Storage.addAcademia(academia);
-//        Storage.addPessoa(admin);
-//        academia.login("admin", "1234");
-        
     }
 
     private static void cadastrarUsuario() {
@@ -158,13 +108,12 @@ public class Principal {
             }
             case 3 -> {
                 novoUsuario = new Administrador(login, senha, true, id, nome, email, telefone, academia);
-                academia.setAdministrador(novoUsuario);
+                academia.setAdministrador((Administrador) novoUsuario);
             }
             default -> System.out.println("Tipo inválido.");
         }
 
         if (novoUsuario != null) {
-            Storage.addPessoa(novoUsuario);
             System.out.println("Usuário cadastrado com sucesso!");
         }
     }
@@ -177,11 +126,12 @@ public class Principal {
         String senha = scanner.nextLine();
 
         try {
-        	Pessoa usuario = (Pessoa) Storage.findUsuario(login, senha);
+        	Object usuario = academia.getUsuario(login, senha);
+        	Pessoa pessoa = (Pessoa) usuario;
             academia.login(login, senha);
 
             System.out.println("Login bem-sucedido!");
-            System.out.println("Bem-vindo, " + usuario.getNome());
+            System.out.println("Bem-vindo, " + pessoa.getNome());
             
             if (usuario instanceof Administrador) {
                 System.out.println("Tipo de usuário: Administrador");
@@ -211,16 +161,16 @@ public class Principal {
                 scanner.nextLine();
 
                 switch (opcao) {
-                    case 1 -> consultarAcademia(usuario);
-                    case 2 -> alterarAcademia(usuario);
-                    case 3 -> removerAcademia(usuario);
+                    case 1 -> consultarAcademia(pessoa);
+                    case 2 -> alterarAcademia(pessoa);
+                    case 3 -> removerAcademia(pessoa);
                     case 4 -> listarHorarios(); 
-                    case 5 -> gerenciarHorarios(usuario); //add,alt,rem horarios
-                    case 6 -> gerenciarAparelhos(usuario);
+                    case 5 -> gerenciarHorarios(pessoa); //add,alt,rem horarios
+                    case 6 -> gerenciarAparelhos(pessoa);
                     case 7 -> listarAparelhos();
                     case 8 -> verDescricaoAparelho();
-                    case 9 -> gerenciarTreinos(usuario);
-                    case 10 -> escolherTreinoDoDia(usuario);
+                    case 9 -> gerenciarTreinos(pessoa);
+                    case 10 -> escolherTreinoDoDia(pessoa);
                     case 11 -> {
                         logado = false;
                         System.out.println("Logout realizado.");
@@ -272,7 +222,6 @@ public class Principal {
 
     private static void removerAcademia(Pessoa usuario) {
         if (usuario instanceof Administrador admin) {
-        	Storage.removePessoa(usuario); 
             System.out.println("Academia removida. Encerrando sistema.");
             System.exit(0);
         } else {
@@ -853,8 +802,8 @@ public class Principal {
     private static void preencherSistemaComDadosDeTeste() {
     	Academia academia = inicializarAcademiaComValoresPadrao();
     	
-    	Pessoa admin = new Administrador(Academia.USER_DEFAULT, Academia.USER_DEFAULT, true, 0, "Admin Padrão", "admin@academia.com", null, academia);
-    	Storage.addPessoa(admin);
+    	Administrador admin = new Administrador(Academia.USER_DEFAULT, Academia.PWD_DEFAULT, true, 0, "Admin Padrão", "admin@academia.com", null, academia);
+    	academia.setAdministrador(admin);
     	academia.login(admin.getLogin(), admin.getPassword());
     	
         Instrutor instrutor1 = new Instrutor("instrutor10", "senha123", false, 10, "Carlos Santos", "carlos.s@gym.com", "(51) 9876-1234", null, academia);
@@ -876,7 +825,7 @@ public class Principal {
         List<Instrutor> instrutores = List.of(instrutor1, instrutor2);
         academia.adicionarInstrutores(instrutores);
         
-        Storage.gravarArquivo(Academia.ARQUIVO_ACADEMIA, academia);
+        Storage.salvarDados(academia);
         
         academia.logout();
         
@@ -902,8 +851,7 @@ public class Principal {
             "Academia Giga Fitness", 
             "(51) 3333-4444", 
             "www.gigafitness.com.br", 
-            enderecoPadrao,
-            null
+            enderecoPadrao
         );
 
         return academia;

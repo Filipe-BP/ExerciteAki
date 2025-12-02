@@ -2,12 +2,17 @@ package br.ucs.poo.exerciteaki;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Pessoa extends Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private int id;
+	
+	@JsonIgnore
 	private Academia academia;
+	
 	private String nome;
 	private String email;
 	private String telefone;

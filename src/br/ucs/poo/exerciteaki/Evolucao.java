@@ -3,6 +3,8 @@ package br.ucs.poo.exerciteaki;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Evolucao implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -10,6 +12,8 @@ public class Evolucao implements Serializable {
 	private LocalDate data;
 	private Float peso;
 	private Float massaMuscular;
+	
+	@JsonIgnore
 	private Aluno aluno;
 	
 	public Evolucao() {}
