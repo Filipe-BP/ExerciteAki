@@ -1,19 +1,14 @@
 package br.ucs.poo.exerciteaki;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 abstract class Storage {
 	
 	public static final String FILE_NAME = "academia.json";
+	
+	private Storage() {}
 	
 	public static Academia carregarDados() {
 	    ObjectMapper mapper = new ObjectMapper();

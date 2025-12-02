@@ -150,7 +150,7 @@ public class Academia implements Serializable {
 			return getInstrutorByLoginAndPass(login, password);
 		}
 		
-		throw new RuntimeException("Usuário não encontrado!");
+		throw new RuntimeException("Usuário não encontrado");
 	}
 	
 	public Usuario getUsuario(String login, String password) {
@@ -415,10 +415,8 @@ public class Academia implements Serializable {
 	}
 	
 	public boolean registrarSaida() {
-	    
-	    if (usuarioLogado instanceof Aluno alunoLogado) {
-	        
-	        
+	    if (usuarioLogado instanceof Aluno) {
+	    	Aluno alunoLogado = (Aluno) usuarioLogado;
 	        Frequencia pendente = alunoLogado.getFrequenciaPendente();
 	        
 	        if (pendente != null) {

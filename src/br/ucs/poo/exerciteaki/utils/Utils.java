@@ -1,6 +1,5 @@
 package br.ucs.poo.exerciteaki.utils;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 
 public class Utils {
