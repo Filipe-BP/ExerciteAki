@@ -22,6 +22,10 @@ public class Aparelho implements Serializable {
 		this.funcao = funcao;
 		this.academia = academia;
 	}
+	public Aparelho(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 	
 	public int getId() {
 		return id;
@@ -76,4 +80,9 @@ public class Aparelho implements Serializable {
 	        this.descricao
 	    );
 	}
+	
+	public String toStringSimples() {
+	    return nome;
+	}
+
 }

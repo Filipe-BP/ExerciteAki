@@ -53,5 +53,12 @@ public class Evolucao implements Serializable {
 	public void setAluno(Aluno aluno) {
 		this.aluno = aluno;
 	}
+	
+	@Override
+	public String toString() {
+	    return String.format("%s | Peso: %.1fkg | Massa muscular: %.1f%%",
+	            data, peso, massaMuscular);
+	}
+
 
 }

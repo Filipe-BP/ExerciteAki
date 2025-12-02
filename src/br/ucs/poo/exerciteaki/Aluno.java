@@ -124,6 +124,8 @@ public class Aluno extends Pessoa {
         
         this.adicionarFrequencia(novaFrequencia); 
     }
+    
+    
 
     public Frequencia getFrequenciaPendente() {
         

@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class Principal {
 	
@@ -232,7 +236,7 @@ public class Principal {
         System.out.println("Tipo de usuário: Administrador");
         boolean logado = true;
         while (logado) {
-            System.out.println("\n=== MENU ===");
+            System.out.println("\n=== MENU ADMINSTRADOR ===");
             System.out.println("1. Gerenciar Horários");
             System.out.println("2. Gerenciar Aparelhos");
             System.out.println("3. Dados da academia");
@@ -270,13 +274,14 @@ public class Principal {
         System.out.println("Tipo de usuário: Instrutor");
         boolean logado = true;
         while (logado) {
-            System.out.println("\n=== MENU INSTRUTOR ===");
+            System.out.println("\n=== MENU INSTRUTORES ===");
             System.out.println("1. Gerenciar Treinos de Alunos (Add/Alt/Rem)");
             System.out.println("2. Listar Alunos e Consultar");
             System.out.println("3. Consultar dados da academia");
             System.out.println("4. Listar Horários");
             System.out.println("5. Consultar Aparelho");
-            System.out.println("6. Sair (Logout)");
+            System.out.println("6. Gerenciar evolução de alunos");
+            System.out.println("7. Sair (Logout)");
             
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -288,7 +293,8 @@ public class Principal {
                 case 3 -> consultarAcademia(instrutor);
                 case 4 -> listarHorarios();
                 case 5 -> consultarAparelhoPersonalizado();      
-                case 6 -> {
+                case 6 -> gerenciarEvolucaoAluno(instrutor);
+                case 7 -> {
                     logado = false;
                     academia.logout();
                     System.out.println("Logout realizado.");
@@ -302,25 +308,27 @@ public class Principal {
         System.out.println("Tipo de usuário: Aluno");
         boolean logado = true;
         while (logado) {
-            System.out.println("\n=== MENU ALUNO ===");
+            System.out.println("\n   MENU ALUNOS   ");
             System.out.println("1. Imprimir Treino do Dia");           
             System.out.println("2. Consultar dados da academia");
             System.out.println("3. Listar Horários");
             System.out.println("4. Consultar Aparelhos");         
-            System.out.println("5. Frequencia");            
-            System.out.println("6. Sair (Logout)"); 
+            System.out.println("5. Frequencia");
+            System.out.println("6. Evolução Pessoal");
+            System.out.println("7. Sair (Logout)"); 
             
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcao) {
-                case 1 -> escolherTreinoDoDia(aluno);
+                case 1 -> consultarTreinoDoDia(aluno);
                 case 2 -> consultarAcademia(aluno);
                 case 3 -> listarHorarios();
                 case 4 -> consultarAparelhoPersonalizado();    
-                case 5 -> menuFrequencia(aluno);                 
-                case 6 -> {
+                case 5 -> menuFrequencia(aluno);   
+                case 6 -> menuEvolucao(aluno);
+                case 7 -> {
                 	academia.registrarSaida();
                     logado = false;
                     academia.logout();
@@ -343,7 +351,7 @@ public class Principal {
     private static void menuFrequencia(Aluno aluno) {
         boolean voltar = false;
         while (!voltar) {
-            System.out.println("\n=== SUBMENU FREQUÊNCIA ===");
+            System.out.println("\n=============================================");
             System.out.println("1. Visualizar Histórico de Frequência (Tela)");
             System.out.println("2. Gerar Relatório de Frequência (Arquivo TXT)");
             System.out.println("3. Voltar ao Menu Principal do Aluno");
@@ -385,6 +393,77 @@ public class Principal {
                          : "PENDENTE";
             
             System.out.printf("%-12s | %-10s | %-10s%n", data, entrada, saida);
+        }
+    }
+    
+    private static void menuEvolucao(Aluno aluno) {
+        boolean ativo = true;
+        while (ativo) {
+            System.out.println("\n==========================================");
+            System.out.println("1. Visualizar Histórico de Evolução (Tela)");
+            System.out.println("2. Gerar Relatório de Evolução (Arquivo TXT)");
+            System.out.println("3. Voltar");
+
+            System.out.print("Escolha uma opção: ");
+            int opcao;
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida.");
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> visualizarHistoricoEvolucao(aluno);
+                case 2 -> gerarRelatorioEvolucao(aluno);
+                case 3 -> ativo = false;
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private static void visualizarHistoricoEvolucao(Aluno aluno) {
+        List<Evolucao> evolucoes = aluno.getEvolucoes();
+
+        if (evolucoes.isEmpty()) {
+            System.out.println("Nenhuma evolução registrada.");
+            return;
+        }
+
+        System.out.println("\n=== HISTÓRICO DE EVOLUÇÃO ===");
+        for (Evolucao e : evolucoes) {
+            System.out.println("Data: " + e.getData() +
+                               " | Peso: " + e.getPeso() + "kg" +
+                               " | Massa muscular: " + e.getMassaMuscular() + "%");
+        }
+    }
+    
+    private static void gerarRelatorioEvolucao(Aluno aluno) {
+        List<Evolucao> evolucoes = aluno.getEvolucoes();
+
+        if (evolucoes.isEmpty()) {
+            System.out.println("Nenhuma evolução registrada.");
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("evolucao_" + aluno.getNome() + ".txt"))) {
+
+            writer.write("Relatório de Evolução - Aluno: " + aluno.getNome());
+            writer.newLine();
+            writer.write("==============================");
+            writer.newLine();
+
+            for (Evolucao e : evolucoes) {
+                writer.write("Data: " + e.getData() +
+                             " | Peso: " + e.getPeso() + "kg" +
+                             " | Massa muscular: " + e.getMassaMuscular() + "%");
+                writer.newLine();
+            }
+
+            System.out.println("Relatório de evolução exportado com sucesso para arquivo TXT!");
+        } catch (IOException ex) {
+            System.out.println("Erro ao gravar relatório: " + ex.getMessage());
         }
     }
     
@@ -457,7 +536,7 @@ public class Principal {
         
         try (PrintWriter writer = new PrintWriter(new FileWriter(nomeArquivo))) {
             writer.print(relatorio);
-            System.out.println("\n✅ Relatório gerado com sucesso!");
+            System.out.println("\n Relatório gerado com sucesso!");
             System.out.println("Arquivo salvo como: " + nomeArquivo);
             System.out.println("Você pode encontrá-lo na pasta raiz do projeto.");
         } catch (IOException e) {
@@ -754,7 +833,7 @@ public class Principal {
         System.out.print("Nova função (atual: " + aparelho.getFuncao() + "): ");
         String novaFuncao = scanner.nextLine();
 
-        int id = aparelho.getId(); // mantém o mesmo ID
+        int id = aparelho.getId(); 
 
         Aparelho novo = new Aparelho(id, novoNome, novaDescricao, novaFuncao, academia);
         academia.alterarAparelhoPorId(id, novo); 
@@ -778,7 +857,6 @@ public class Principal {
         Aparelho aparelho = null;
         boolean continuar = true;
 
-        // Seleção de aparelho com filtro por ID ou Nome
         while (continuar && aparelho == null) {
             System.out.println("\n=== SELEÇÃO DE APARELHO PARA REMOÇÃO ===");
             System.out.println("1. Pesquisar por ID");
@@ -1052,9 +1130,6 @@ public class Principal {
             System.out.println("Nenhum aparelho encontrado com o nome '" + nomeQuery + "'.");
         }
     }
-    
-
-
 
     private static void consultarAparelhoPersonalizado() {
         boolean continuarConsultando = true;
@@ -1178,6 +1253,185 @@ public class Principal {
         }
         return null;
     }
+    
+    private static void gerenciarEvolucaoAluno(Pessoa usuario) {
+        if (!(usuario instanceof Instrutor)) {
+            System.out.println("Acesso negado. Apenas instrutores podem gerenciar evolução dos alunos.");
+            return;
+        }
+
+        Aluno aluno = null;
+        boolean continuar = true;
+
+        while (continuar && aluno == null) {
+            System.out.println("\n=== SELEÇÃO DE ALUNO PARA EVOLUÇÃO ===");
+            System.out.println("1. Pesquisar por ID");
+            System.out.println("2. Pesquisar por Nome");
+            System.out.println("0. Cancelar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            if (scanner.hasNextInt()) {
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } else {
+                System.out.println("Opção inválida.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> aluno = selecionarAlunoPorId();
+                case 2 -> aluno = selecionarAlunoPorNome();
+                case 0 -> {
+                    System.out.println("Operação cancelada.");
+                    return;
+                }
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+
+        if (aluno == null) {
+            System.out.println("Nenhum aluno selecionado.");
+            return;
+        }
+
+        boolean gerenciando = true;
+        while (gerenciando) {
+            System.out.println("\n=== GERENCIAR EVOLUÇÃO DO ALUNO ===");
+            System.out.println("Aluno: " + aluno.getNome());
+            System.out.println("1. Registrar nova evolução");
+            System.out.println("2. Listar evoluções");
+            System.out.println("3. Alterar evolução");
+            System.out.println("4. Remover evolução");
+            System.out.println("5. Voltar");
+            System.out.print("Escolha: ");
+
+            int opcao;
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida.");
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> {
+                    System.out.print("Data da avaliação (DD/MM/AAAA): ");
+                    String entradaData = scanner.nextLine();
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    LocalDate data = LocalDate.parse(entradaData, formatter);
+
+                    System.out.print("Peso (kg): ");
+                    Float peso = Float.parseFloat(scanner.nextLine());
+
+                    System.out.print("Percentual de massa muscular (%): ");
+                    Float massaMuscular = Float.parseFloat(scanner.nextLine());
+
+                    Evolucao evolucao = new Evolucao(data, peso, massaMuscular, aluno);
+                    aluno.adicionarEvolucao(evolucao);
+
+                    System.out.println("Evolução registrada com sucesso!");
+                }
+
+                case 2 -> {
+                    List<Evolucao> evolucoes = aluno.getEvolucoes();
+                    if (evolucoes.isEmpty()) {
+                        System.out.println("Nenhuma evolução registrada para este aluno.");
+                    } else {
+                        System.out.println("\n=== HISTÓRICO DE EVOLUÇÃO ===");
+                        for (int i = 0; i < evolucoes.size(); i++) {
+                            Evolucao e = evolucoes.get(i);
+                            System.out.println(i + " - Data: " + e.getData() +
+                                               " | Peso: " + e.getPeso() + "kg" +
+                                               " | Massa Muscular: " + e.getMassaMuscular() + "%");
+                        }
+                    }
+                }
+                case 3 -> {
+                    List<Evolucao> evolucoes = aluno.getEvolucoes();
+                    if (evolucoes.isEmpty()) {
+                        System.out.println("Nenhuma evolução registrada.");
+                    } else {
+                        System.out.println("\n=== EVOLUÇÕES ===");
+                        for (int i = 0; i < evolucoes.size(); i++) {
+                            Evolucao e = evolucoes.get(i);
+                            // Mostra a data formatada em DD/MM/AAAA
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                            String dataFormatada = e.getData().format(formatter);
+
+                            System.out.println(i + " - Data: " + dataFormatada +
+                                               " | Peso: " + e.getPeso() + "kg" +
+                                               " | Massa Muscular: " + e.getMassaMuscular() + "%");
+                        }
+
+                        System.out.print("Escolha o índice da evolução a alterar: ");
+                        int idx;
+                        try {
+                            idx = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException ex) {
+                            System.out.println("Entrada inválida. Digite um número válido.");
+                            return; // volta para o menu de evolução, não para o menu inicial
+                        }
+
+                        if (idx >= 0 && idx < evolucoes.size()) {
+                            try {
+                                System.out.print("Nova data (DD/MM/AAAA): ");
+                                String entradaData = scanner.nextLine();
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                                LocalDate novaData = LocalDate.parse(entradaData, formatter);
+
+                                System.out.print("Novo peso (kg): ");
+                                Float novoPeso = Float.parseFloat(scanner.nextLine());
+
+                                System.out.print("Nova massa muscular (%): ");
+                                Float novaMassa = Float.parseFloat(scanner.nextLine());
+
+                                Evolucao novaEvolucao = new Evolucao(novaData, novoPeso, novaMassa, aluno);
+                                aluno.alterarEvolucao(idx, novaEvolucao);
+
+                                System.out.println("Evolução alterada com sucesso!");
+                            } catch (Exception ex) {
+                                System.out.println("Entrada inválida. Tente novamente.");
+                                // não sai do menu, apenas retorna para o loop de evolução
+                            }
+                        } else {
+                            System.out.println("Índice inválido.");
+                        }
+                    }
+                }
+
+                case 4 -> {
+                    List<Evolucao> evolucoes = aluno.getEvolucoes();
+                    if (evolucoes.isEmpty()) {
+                        System.out.println("Nenhuma evolução registrada.");
+                    } else {
+                        System.out.println("\n=== EVOLUÇÕES ===");
+                        for (int i = 0; i < evolucoes.size(); i++) {
+                            Evolucao e = evolucoes.get(i);
+                            System.out.println(i + " - Data: " + e.getData() +
+                                               " | Peso: " + e.getPeso() + "kg" +
+                                               " | Massa Muscular: " + e.getMassaMuscular() + "%");
+                        }
+                        System.out.print("Escolha o índice da evolução a remover: ");
+                        int idx = Integer.parseInt(scanner.nextLine());
+                        if (idx >= 0 && idx < evolucoes.size()) {
+                            Evolucao removida = evolucoes.get(idx);
+                            aluno.removerEvolucao(removida);
+                            System.out.println("Evolução removida com sucesso!");
+                        } else {
+                            System.out.println("Índice inválido.");
+                        }
+                    }
+                }
+                case 5 -> gerenciando = false;
+                default -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
 
 
     
@@ -1190,7 +1444,7 @@ public class Principal {
 
         boolean gerenciando = true;
         while (gerenciando) {
-            System.out.println("\n=== GERENCIAR TREINOS ===");
+            System.out.println("\n==== TREINOS =====");
             System.out.println("1. Adicionar treino para aluno");
             System.out.println("2. Alterar treino de aluno");
             System.out.println("3. Remover treino de aluno");
@@ -1218,7 +1472,7 @@ public class Principal {
         }
         
         int ordem = 1;
-        System.out.println("\n--- CRIAÇÃO/ALTERAÇÃO DE EXERCÍCIOS ---");
+        System.out.println("\n==== CRIAÇÃO/ALTERAÇÃO DE EXERCÍCIOS ===");
         
         while (true) {
             System.out.print("\nDeseja adicionar um novo exercício? (s/n): ");
@@ -1254,7 +1508,7 @@ public class Principal {
                 Exercicio novoExercicio = new Exercicio(ordem++, carga, repeticoes, aparelhoSelecionado);
                 novaListaExercicios.add(novoExercicio);
                 
-                System.out.println("✅ Exercício '" + aparelhoSelecionado.getNome() + "' adicionado com Carga: " + carga + "kg.");
+                System.out.println("Exercício '" + aparelhoSelecionado.getNome() + "' adicionado com Carga: " + carga + "kg.");
                 
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida. Tente novamente.");
@@ -1264,9 +1518,9 @@ public class Principal {
         return novaListaExercicios;
     }
     private static void alterarExercicioIndividualmente(Exercicio exercicio) {
-        System.out.println("\n--- ALTERANDO EXERCÍCIO: " + exercicio.getAparelho().getNome() + " ---");
+        System.out.println("\n=== ALTERANDO EXERCÍCIO: " + exercicio.getAparelho().getNome() + " ===");
         
-        System.out.print("Nova Carga (kg) (atual: " + exercicio.getCarga() + "kg): ");
+        System.out.print("Digite a nova carga (kg): ");
         String inputCarga = scanner.nextLine();
         if (!inputCarga.trim().isEmpty()) {
             try {
@@ -1279,7 +1533,7 @@ public class Principal {
             System.out.println("Carga mantida.");
         }
 
-        System.out.print("Novo Número de Repetições (atual: " + exercicio.getNumeroRepeticoes() + "): ");
+        System.out.print("Novo Número de Repetições: ");
         String inputReps = scanner.nextLine();
         if (!inputReps.trim().isEmpty()) {
             try {
@@ -1354,7 +1608,6 @@ public class Principal {
         Aluno aluno = null;
         boolean continuar = true;
 
-        // Seleção de aluno com filtro por ID ou Nome
         while (continuar && aluno == null) {
             System.out.println("\n=== SELEÇÃO DE ALUNO ===");
             System.out.println("1. Pesquisar por ID");
@@ -1456,7 +1709,6 @@ public class Principal {
         Aluno aluno = null;
         boolean continuar = true;
 
-        // Seleção de aluno com filtro por ID ou Nome
         while (continuar && aluno == null) {
             System.out.println("\n=== SELEÇÃO DE ALUNO PARA ALTERAÇÃO ===");
             System.out.println("1. Pesquisar por ID");
@@ -1515,7 +1767,6 @@ public class Principal {
 
         Treino treino = treinos.get(indexTreino);
 
-        // --- ALTERAÇÃO DE PROPRIEDADES BÁSICAS ---
         System.out.print("Novo nome do treino (atual: " + treino.getNome() + "): ");
         String novoNome = scanner.nextLine();
         treino.setNome(novoNome);
@@ -1524,7 +1775,6 @@ public class Principal {
         int novoDia = Integer.parseInt(scanner.nextLine());
         treino.setDiaSemana(novoDia);
 
-        // --- ALTERAÇÃO DE EXERCÍCIOS ---
         List<Exercicio> listaExercicios = treino.getExercicios();
 
         if (listaExercicios.isEmpty()) {
@@ -1692,6 +1942,99 @@ public class Principal {
         }
     }
     
+    private static void consultarTreinoDoDia(Aluno aluno) {
+        List<Treino> treinos = aluno.getTreinos();
+        if (treinos.isEmpty()) {
+            System.out.println("Nenhum treino cadastrado para você.");
+            return;
+        }
+
+        // Lista de dias da semana como opções
+        String[] diasSemana = {"segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"};
+
+        System.out.println("\n=== CONSULTAR TREINO DO DIA ===");
+        for (int i = 0; i < diasSemana.length; i++) {
+            System.out.println(i + " - " + diasSemana[i]);
+        }
+
+        System.out.print("Escolha o índice do dia da semana: ");
+        int idxDia;
+        try {
+            idxDia = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return;
+        }
+
+        if (idxDia < 0 || idxDia >= diasSemana.length) {
+            System.out.println("Índice inválido.");
+            return;
+        }
+
+        List<Treino> treinosDoDia = new ArrayList<>();
+        for (Treino t : treinos) {
+            if (t.getDiaSemana() == idxDia) {
+                treinosDoDia.add(t);
+            }
+        }
+
+        if (treinosDoDia.isEmpty()) {
+            System.out.println("Nenhum treino encontrado para " + diasSemana[idxDia]);
+            return;
+        }
+
+        System.out.println("\n=== TREINOS DISPONÍVEIS NA " + diasSemana[idxDia].toUpperCase() + " ===");
+        for (int i = 0; i < treinosDoDia.size(); i++) {
+            Treino t = treinosDoDia.get(i);
+            System.out.println(i + " - " + t.getNome());
+        }
+
+        System.out.print("Escolha o índice do treino para gerar arquivo TXT: ");
+        int idxTreino;
+        try {
+            idxTreino = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return;
+        }
+
+        if (idxTreino < 0 || idxTreino >= treinosDoDia.size()) {
+            System.out.println("Índice inválido.");
+            return;
+        }
+
+        Treino treinoSelecionado = treinosDoDia.get(idxTreino);
+
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("treino_" + aluno.getNome() + "_" + diasSemana[idxDia] + ".txt"))) {
+            
+            writer.write("Treino do dia - Aluno: " + aluno.getNome());
+            writer.newLine();
+            writer.write("Dia da semana: " + diasSemana[treinoSelecionado.getDiaSemana()]);
+            writer.newLine();
+            writer.write("Nome do treino: " + treinoSelecionado.getNome());
+            writer.newLine();
+            writer.write("Exercícios:");
+            writer.newLine();
+
+            // 👉 É aqui que entra o for
+            for (Exercicio exercicio : treinoSelecionado.getExercicios()) {
+                writer.write("- Exercício " + exercicio.getOrdem()
+                           + ": " + exercicio.getAparelho().toStringSimples()
+                           + " | Carga: " + exercicio.getCarga() + "kg"
+                           + " | Repetições: " + exercicio.getNumeroRepeticoes());
+                writer.newLine();
+            }
+
+            System.out.println("Treino exportado com sucesso para arquivo TXT!");
+        } catch (IOException e) {
+            System.out.println("Erro ao gravar treino em arquivo: " + e.getMessage());
+        }
+
+    }
+
+
+    
     private static void inicializarAcademiaComValoresPadrao() {
         Endereco enderecoPadrao = new Endereco(
             999, 
@@ -1701,7 +2044,7 @@ public class Principal {
             "Bairro Teste", 
             "99999-999", 
             "Cidade Padrão", 
-            "TS" // TS para Teste
+            "TS" 
         );
 
         academia = new Academia(
