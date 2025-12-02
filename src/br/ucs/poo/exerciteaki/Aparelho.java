@@ -2,6 +2,8 @@ package br.ucs.poo.exerciteaki;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Aparelho implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -10,6 +12,8 @@ public class Aparelho implements Serializable {
 	private String nome;
 	private String descricao;
 	private String funcao;
+	
+	@JsonIgnore
 	private Academia academia;
 	
 	public Aparelho() {}

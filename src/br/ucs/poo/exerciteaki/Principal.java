@@ -59,69 +59,14 @@ public class Principal {
     }
 
     private static void inicializarAcademia() {
-        System.out.println("---Cadastro da Academia---");
-        // Inicializa academia com valores padrão
-        inicializarAcademiaComValoresPadrao();
-//        System.out.print("Nome da academia: ");
-//        String nome = scanner.nextLine();
-//
-//        System.out.print("Telefone: ");
-//        String telefone = scanner.nextLine();
-//
-//        System.out.print("Website: ");
-//        String website = scanner.nextLine();
-//
-//        System.out.println("=== Endereço da academia ===");
-//        System.out.print("ID: ");
-//        int idEndereco = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        System.out.print("Logradouro: ");
-//        String logradouro = scanner.nextLine();
-//
-//        System.out.print("Número: ");
-//        String numero = scanner.nextLine();
-//
-//        System.out.print("Complemento: ");
-//        String complemento = scanner.nextLine();
-//
-//        System.out.print("Bairro: ");
-//        String bairro = scanner.nextLine();
-//
-//        System.out.print("CEP: ");
-//        String cep = scanner.nextLine();
-//
-//        System.out.print("Cidade: ");
-//        String cidade = scanner.nextLine();
-//
-//        System.out.print("Estado: ");
-//        String estado = scanner.nextLine();
-
-//        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
-        // Cria administrador padrão e registra no storage
-        Pessoa admin = new Administrador("admin", "1234", true, 0, "Admin Padrão", "admin@academia.com", null, null);
-        Storage.addPessoa(admin);
-
-        // Loop de login: solicita até acertar as credenciais
-        boolean autenticado = false;
-        while (!autenticado) {
-            System.out.print("Login do administrador: ");
-            String loginInput = scanner.nextLine();
-
-            System.out.print("Senha do administrador: ");
-            String senhaInput = scanner.nextLine();
-
-            try {
-                academia.login(loginInput, senhaInput);
-                autenticado = true;
-            } catch (RuntimeException e) {
-                System.out.println("Usuário não encontrado. Tente novamente.");
-            }
-        }
-
-        preencherSistemaComDadosDeTeste();
-        System.out.println("Academia cadastrada com sucesso.");
+        System.out.println("-------- Bem-vindo(a) ao ExerciteAki --------");
         
+        boolean criaDadosDeTeste = !Storage.arquivoExiste();
+        if (criaDadosDeTeste) {
+        	preencherSistemaComDadosDeTeste();
+		} else {
+			academia = Storage.carregarDados();
+		}
     }
 
     private static void cadastrarUsuario() {
@@ -182,13 +127,12 @@ public class Principal {
             }
             case 3 -> {
                 novoUsuario = new Administrador(login, senha, true, id, nome, email, telefone, academia);
-                academia.setAdministrador(novoUsuario);
+                academia.setAdministrador((Administrador) novoUsuario);
             }
             default -> System.out.println("Tipo inválido.");
         }
 
         if (novoUsuario != null) {
-            Storage.addPessoa(novoUsuario);
             System.out.println("Usuário cadastrado com sucesso!");
         }
     }
@@ -573,7 +517,6 @@ public class Principal {
 
     private static void removerAcademia(Pessoa usuario) {
         if (usuario instanceof Administrador) {
-        	Storage.removePessoa(usuario); 
             System.out.println("Academia removida. Encerrando sistema.");
             System.exit(0);
         } else {
@@ -2062,9 +2005,12 @@ public class Principal {
     }
     
     private static void preencherSistemaComDadosDeTeste() {
-        System.out.println("... Adicionando 10 registros de Endereços e Pessoas de Teste.");
-        
-        Academia academia = Storage.findAcademia(1);
+    	Academia academia = inicializarAcademiaComValoresPadrao();
+    	
+    	Administrador admin = new Administrador(Academia.USER_DEFAULT, Academia.PWD_DEFAULT, true, 0, "Admin Padrão", "admin@academia.com", null, academia);
+    	academia.setAdministrador(admin);
+    	academia.login(admin.getLogin(), admin.getPassword());
+    	
         Instrutor instrutor1 = new Instrutor("instrutor10", "senha123", false, 10, "Carlos Santos", "carlos.s@gym.com", "(51) 9876-1234", null, academia);
         Instrutor instrutor2 = new Instrutor("instrutor11", "senha123", false, 11, "Ana Maria Silva", "ana.m@gym.com", "(51) 9876-5678", null, academia);
 
@@ -2078,23 +2024,17 @@ public class Principal {
         Aluno aluno8 = new Aluno("aluno19", "senha123", false, 19, academia, "Larissa Melo", "larissa.m@teste.com", "(51) 9912-0123", new Date(), 1.60f);
         Aluno aluno9 = new Aluno("aluno20", "senha123", false, 20, academia, "Rafael Gomes", "rafael.g@teste.com", "(51) 9912-1234", new Date(), 1.85f);
 
-        List<Aluno> alunos = List.of(aluno1, aluno2, aluno3, aluno4, aluno5, aluno6,aluno7,aluno8,aluno9);
+        List<Aluno> alunos = List.of(aluno1, aluno2, aluno3, aluno4, aluno5, aluno6, aluno7, aluno8, aluno9);
         academia.adicionarAlunos(alunos);
         
         List<Instrutor> instrutores = List.of(instrutor1, instrutor2);
         academia.adicionarInstrutores(instrutores);
         
-        Storage.addPessoa(instrutor1);
-        Storage.addPessoa(instrutor2);
-        Storage.addPessoa(aluno1);
-        Storage.addPessoa(aluno2);
-        Storage.addPessoa(aluno3);
-        Storage.addPessoa(aluno4);
-        Storage.addPessoa(aluno5);
-        Storage.addPessoa(aluno6);
-        Storage.addPessoa(aluno7);
-        Storage.addPessoa(aluno8);
-        Storage.addPessoa(aluno9);
+        Storage.salvarDados(academia);
+        
+        academia.logout();
+        
+        System.out.println("Academia cadastrada com sucesso.");
 	}
     
 }

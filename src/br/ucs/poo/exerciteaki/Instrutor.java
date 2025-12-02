@@ -9,6 +9,8 @@ public class Instrutor extends Pessoa {
 	private Formacao formacao;
 	private List<Treino> treinos;
 	
+	public Instrutor() {}
+	
 	public Instrutor(String login, String password, Boolean administrador, int id, String nome, String email, String telefone,
 			Formacao formacao, Academia academia) {
 		super(academia, login, password, administrador,id, nome, email, telefone);

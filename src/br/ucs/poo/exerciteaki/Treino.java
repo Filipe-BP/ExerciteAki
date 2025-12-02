@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Treino implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -12,7 +14,10 @@ public class Treino implements Serializable {
 	private Integer diaSemana;
 	private String nome;
 	private List<Exercicio> exercicios;
+	
+	@JsonIgnore
 	private Aluno aluno;
+	
 	public Treino() {}
 	
 	public Treino(int id, Integer diaSemana, String nome, Aluno aluno) {

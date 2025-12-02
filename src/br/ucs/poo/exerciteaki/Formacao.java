@@ -9,6 +9,8 @@ public class Formacao implements Serializable {
 	private int id;
 	private String nome;
 	private String descricao;
+	
+	public Formacao() {}
 
 	public Formacao(int id, String nome, String descricao) {
 		super();
