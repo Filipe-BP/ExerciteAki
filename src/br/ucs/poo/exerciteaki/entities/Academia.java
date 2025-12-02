@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.ucs.poo.exerciteaki.exception.AcessoNegadoException;
 import br.ucs.poo.exerciteaki.file.Storage;
 
 public class Academia implements Serializable {
@@ -39,7 +40,7 @@ public class Academia implements Serializable {
 	
 	public Academia() {}
     
-	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco) {
+	public Academia(String login, String password, int id, String nome, String telefone, String website, Endereco endereco) throws AcessoNegadoException {
 		if (validaUsuarioAdminPadrao(login, password)) {
 			this.id = id;
 			this.nome=nome;
@@ -51,11 +52,11 @@ public class Academia implements Serializable {
 			this.instrutores = new ArrayList<>();
 			this.aparelhos = new ArrayList<>();
 		} else {
-			throw new RuntimeException("Usuário não possui acesso a cadastrar academia");
+			throw new AcessoNegadoException("Usuário não possui acesso a cadastrar academia");
 		}
 	}
 	
-	public Academia(int id, String nome, String telefone, String website, Endereco endereco, Administrador administrador) {
+	public Academia(int id, String nome, String telefone, String website, Endereco endereco, Administrador administrador) throws AcessoNegadoException {
 		if (isNotNull(administrador)) {
 			this.id = id;
 			this.nome=nome;
@@ -67,7 +68,7 @@ public class Academia implements Serializable {
 			this.instrutores = new ArrayList<>();
 			this.aparelhos = new ArrayList<>();
 		} else {
-			throw new RuntimeException("Usuário não possui acesso a cadastrar academia");
+			throw new AcessoNegadoException("Usuário não possui acesso a cadastrar academia");
 		}
 	}
 
@@ -123,7 +124,7 @@ public class Academia implements Serializable {
 	}
 	
 	//Métodos para login/logout
-	public void login(String login, String password) {
+	public void login(String login, String password) throws AcessoNegadoException {
 		if (this.usuarioLogado != null) {
 			return; // já possui usuário logado, efetuar logout
 		}
@@ -133,9 +134,9 @@ public class Academia implements Serializable {
 		}
 	}
 	
-	public Object getPessoa(String login, String password) {
+	public Object getPessoa(String login, String password) throws AcessoNegadoException {
 		if (isEmpty(password) || isEmpty(login)) {
-			throw new RuntimeException("Usuário ou senha inválidos");
+			throw new AcessoNegadoException("Usuário ou senha inválidos");
 		}
 		
 		if (isNotNull(this.administrador) 
@@ -154,10 +155,10 @@ public class Academia implements Serializable {
 			if (isNotNull(existent)) return existent;
 		}
 		
-		throw new RuntimeException("Usuário não encontrado");
+		throw new AcessoNegadoException("Usuário não encontrado");
 	}
 	
-	public Usuario getUsuario(String login, String password) {
+	public Usuario getUsuario(String login, String password) throws AcessoNegadoException {
 		return (Usuario) this.getPessoa(login, password);
 	}
 	
@@ -387,8 +388,6 @@ public class Academia implements Serializable {
 	    }	    
 	    return this.usuarioLogado.isAdministrador() || this.usuarioLogado instanceof Instrutor;
 	}
-	
-	
 	
 	public Aluno buscarAlunoPorId(int id) {
 	    for (Aluno aluno : alunos) {

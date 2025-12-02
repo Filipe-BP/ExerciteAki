@@ -29,6 +29,7 @@ import br.ucs.poo.exerciteaki.entities.Instrutor;
 import br.ucs.poo.exerciteaki.entities.Pessoa;
 import br.ucs.poo.exerciteaki.entities.Treino;
 import br.ucs.poo.exerciteaki.entities.Usuario;
+import br.ucs.poo.exerciteaki.exception.AcessoNegadoException;
 import br.ucs.poo.exerciteaki.file.Storage;
 import br.ucs.poo.exerciteaki.utils.Utils;
 
@@ -38,12 +39,12 @@ public class Principal {
 	private static int contadorId = 1;
 	private static Academia academia;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AcessoNegadoException {
 		inicializarAcademia();
 		realizarLogin();
 	}
 
-	private static void inicializarAcademia() {
+	private static void inicializarAcademia() throws AcessoNegadoException {
 		System.out.println("-------- Bem-vindo(a) ao ExerciteAki --------");
 
 		boolean criaDadosDeTeste = !Storage.arquivoExiste();
@@ -149,6 +150,19 @@ public class Principal {
 
 			System.out.println("Login bem-sucedido!");
 			System.out.println("Bem-vindo(a), " + pessoa.getNome());
+			
+			if (usuario instanceof Aluno) {
+				Aluno aluno = (Aluno) usuario;
+				if (Utils.isNotNull(aluno.getFrequenciaPendente())) {
+					System.out.println(
+							" Aviso: Você já tem uma entrada pendente. Faça logout para registrar a saída anterior.");
+				} else {
+					aluno.registrarEntrada();
+					String horaEntrada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+					System.out.println("Entrada registrada! Hora: " + horaEntrada);
+				}
+				 
+			}
 
 			if (usuario instanceof Administrador) {
 				menuAdministrador((Administrador) usuario);
@@ -157,8 +171,7 @@ public class Principal {
 			} else if (usuario instanceof Aluno) {
 				menuAluno((Aluno) usuario);
 			}
-
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			System.out.println("Erro: " + e.getMessage());
 		}
 	}
@@ -182,30 +195,34 @@ public class Principal {
 			int opcao = scanner.nextInt();
 			scanner.nextLine();
 
-			switch (opcao) {
-			case 1: consultarAcademia(admin);
-				break;
-			case 2: gerenciarAcademia(admin);
-				break;
-			case 3: gerenciarHorarios(admin);
-				break;
-			case 4: gerenciarAparelhos(admin);
-				break;
-			case 5: cadastrarUsuario(admin);
-				break;
-			case 6: listarHorarios();
-				break;
-			case 7: consultarAparelhoPersonalizado();
-				break;
-			case 8: consultarAlunoPersonalizado();
-				break;
-			case 9: {
-					logado = false;
-					academia.logout();
-					System.out.println("Logout realizado.");
+			try {
+				switch (opcao) {
+				case 1: consultarAcademia(admin);
+					break;
+				case 2: gerenciarAcademia(admin);
+					break;
+				case 3: gerenciarHorarios(admin);
+					break;
+				case 4: gerenciarAparelhos(admin);
+					break;
+				case 5: cadastrarUsuario(admin);
+					break;
+				case 6: listarHorarios();
+					break;
+				case 7: consultarAparelhoPersonalizado();
+					break;
+				case 8: consultarAlunoPersonalizado();
+					break;
+				case 9: {
+						logado = false;
+						academia.logout();
+						System.out.println("Logout realizado.");
+					}
+					break;
+				default: System.out.println("Opção inválida.");
 				}
-				break;
-			default: System.out.println("Opção inválida.");
+			} catch (AcessoNegadoException e) {
+				System.out.println("Erro: " + e.getMessage());
 			}
 		}
 	}
@@ -254,24 +271,28 @@ public class Principal {
 				int opcao = scanner.nextInt();
 				scanner.nextLine();
 				
-				switch (opcao) {
-				case 1:
-					alterarAcademia(admin);
-					break;
-				case 2:
-					removerAcademia(admin);
-					break;
-				case 3:
-					voltar = true;
-					break;
-				default: {
-					System.out.println("Opção inválida. Tente novamente.");
-					voltar = true;
+				try {
+					switch (opcao) {
+					case 1:
+						alterarAcademia(admin);
+						break;
+					case 2:
+						removerAcademia(admin);
+						break;
+					case 3:
+						voltar = true;
+						break;
+					default: {
+						System.out.println("Opção inválida. Tente novamente.");
+						voltar = true;
+						}
 					}
+				} catch (AcessoNegadoException e) {
+					System.out.println("Erro: " + e.getMessage());
 				}
 			}
 		} else {
-			throw new RuntimeException("Acesso negado. Apenas administradores podem gerenciar os dados da academia.");
+			System.out.println("Acesso negado. Apenas administradores podem gerenciar os dados da academia.");
 		}
 	}
 
@@ -582,7 +603,7 @@ public class Principal {
 		}
 	}
 
-	private static void removerAcademia(Pessoa usuario) {
+	private static void removerAcademia(Pessoa usuario) throws AcessoNegadoException {
 		if (usuario instanceof Administrador) {
 			boolean sucesso = Storage.deletarArquivo();
 			if (sucesso) {
@@ -591,14 +612,13 @@ public class Principal {
 			}
 			System.out.println("Erro ao remover academia. Tente novamente mais tarde");
 		} else {
-			System.out.println("Acesso negado. Apenas administradores podem remover a academia.");
+			throw new AcessoNegadoException("Apenas administradores podem remover a academia.");
 		}
 	}
 
-	private static void gerenciarHorarios(Pessoa usuario) {
+	private static void gerenciarHorarios(Pessoa usuario) throws AcessoNegadoException {
 		if (!(usuario instanceof Administrador)) {
-			System.out.println("Acesso negado. Apenas administradores podem gerenciar horários.");
-			return;
+			throw new AcessoNegadoException("Apenas administradores podem gerenciar horários.");
 		}
 
 		boolean gerenciando = true;
@@ -1538,6 +1558,11 @@ public class Principal {
 
 				System.out.print("Número de Repetições: ");
 				Integer repeticoes = Integer.parseInt(scanner.nextLine());
+				
+				if (repeticoes > 30) {
+					System.out.println("Número de repetições (" + repeticoes + ") excessivo.");
+					continue;
+				}
 
 				Exercicio novoExercicio = new Exercicio(ordem++, carga, repeticoes, aparelhoSelecionado);
 				novaListaExercicios.add(novoExercicio);
@@ -1725,6 +1750,11 @@ public class Principal {
 
 			System.out.print("Repetições: ");
 			int repeticoes = Integer.parseInt(scanner.nextLine());
+			
+			if (repeticoes > 30) {
+				System.out.println("Número de repetições (" + repeticoes + ") excessivo.");
+				continue;
+			}
 
 			Exercicio exercicio = new Exercicio(ordem++, carga, repeticoes, aparelho);
 			treino.adicionarExercicio(exercicio);
@@ -2077,7 +2107,7 @@ public class Principal {
 
 	}
 
-	private static void preencherSistemaComDadosDeTeste() {
+	private static void preencherSistemaComDadosDeTeste() throws AcessoNegadoException {
 		inicializarAcademiaComValoresPadrao();
 
 		Administrador admin = new Administrador(Academia.USER_DEFAULT, Academia.PWD_DEFAULT, true, 0, "Admin Padrão",
@@ -2123,7 +2153,7 @@ public class Principal {
 		System.out.println("Academia cadastrada com sucesso.");
 	}
 
-	private static void inicializarAcademiaComValoresPadrao() {
+	private static void inicializarAcademiaComValoresPadrao() throws AcessoNegadoException {
 		Endereco enderecoPadrao = new Endereco(999, "Rua da Programação", "101", "Bloco A", "Bairro Teste", "99999-999",
 				"Cidade Padrão", "TS");
 
