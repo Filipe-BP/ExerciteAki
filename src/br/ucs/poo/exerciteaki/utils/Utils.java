@@ -1,6 +1,9 @@
 package br.ucs.poo.exerciteaki.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 public class Utils {
 	
@@ -34,5 +37,14 @@ public class Utils {
 	public static boolean equalsIgnoreCase(String s, String s2) {
 		if (Utils.isEmpty(s) || Utils.isEmpty(s2)) return false;
 		return s.equalsIgnoreCase(s2);
+	}
+	
+	public static Date parseDate(String dataStr) {
+		try {
+			return new SimpleDateFormat("dd/mm/yyyy").parse(dataStr);
+		} catch (ParseException e) {
+			System.out.println("Data inválida. Usando data atual.");
+			return new Date();
+		}
 	}
 }

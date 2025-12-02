@@ -25,40 +25,7 @@ public class Principal {
 
 	public static void main(String[] args) {
 		inicializarAcademia();
-
-		boolean ativo = true;
-		while (ativo) {
-			System.out.println("\n=== MENU PRINCIPAL ===");
-			System.out.println("1. Cadastrar usuário");
-			System.out.println("2. Login");
-			System.out.println("3. Sair");
-			System.out.print("Escolha uma opção: ");
-
-			try {
-				int opcao = scanner.nextInt();
-				scanner.nextLine();
-
-				switch (opcao) {
-				case 1:
-					cadastrarUsuario();
-					break;
-				case 2:
-					realizarLogin();
-					break;
-				case 3: {
-					ativo = false;
-					System.out.println("Encerrando...");
-					break;
-				}
-				default:
-					System.out.println("Opção inválida. Escolha 1, 2 ou 3.");
-				}
-			} catch (java.util.InputMismatchException e) {
-				System.out.println("Opção inválida. Por favor, digite apenas o numero).");
-				scanner.nextLine();
-			}
-
-		}
+		realizarLogin();
 	}
 
 	private static void inicializarAcademia() {
@@ -72,14 +39,24 @@ public class Principal {
 		}
 	}
 
-	private static void cadastrarUsuario() {
-		System.out.println("\n=== CADASTRO DE USUÁRIO ===");
-		System.out.println("1. Aluno");
-		System.out.println("2. Instrutor");
-		System.out.println("3. Administrador");
-		System.out.print("Escolha o tipo: ");
-		int tipo = scanner.nextInt();
-		scanner.nextLine();
+	private static void cadastrarUsuario(Pessoa usuario) {
+		if (usuario instanceof Aluno) {
+			System.out.println("Acesso negado. Alunos não possuem permissão para cadastrar usuários.");
+		}
+		
+		int tipo = 0;
+		if (usuario instanceof Instrutor) {
+			System.out.println("\n=== CADASTRO DE ALUNOS ===");
+			tipo = 1;
+		} else {
+			System.out.println("\n=== CADASTRO DE USUÁRIO ===");
+			System.out.println("1. Aluno");
+			System.out.println("2. Instrutor");
+			System.out.println("3. Administrador");
+			System.out.print("Escolha o tipo: ");
+			tipo = scanner.nextInt();
+			scanner.nextLine();
+		}
 
 		System.out.print("Login: ");
 		String login = scanner.nextLine();
@@ -103,7 +80,7 @@ public class Principal {
 		switch (tipo) {
 		case 1: {
 				System.out.print("Data de nascimento (dd/MM/yyyy): ");
-				Date nascimento = parseDate(scanner.nextLine());
+				Date nascimento = Utils.parseDate(scanner.nextLine());
 	
 				System.out.print("Altura (em metros): ");
 				float altura = scanner.nextFloat();
@@ -156,17 +133,7 @@ public class Principal {
 			academia.login(login, senha); // Assume que academia.login() seta usuarioLogado
 
 			System.out.println("Login bem-sucedido!");
-			System.out.println("Bem-vindo, " + pessoa.getNome());
-
-			if (usuario instanceof Aluno) {
-				/*
-				 * if (aluno.getFrequenciaPendente() != null) { System.out.
-				 * println(" Aviso: Você já tem uma entrada pendente. Faça logout para registrar a saída anterior."
-				 * ); } else { aluno.registrarEntrada(); String horaEntrada =
-				 * LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-				 * System.out.println(" Entrada registrada! Hora: " + horaEntrada); }FIXME
-				 */
-			}
+			System.out.println("Bem-vindo(a), " + pessoa.getNome());
 
 			if (usuario instanceof Administrador) {
 				menuAdministrador((Administrador) usuario);
@@ -186,30 +153,30 @@ public class Principal {
 		boolean logado = true;
 		while (logado) {
 			System.out.println("\n=== MENU ADMINSTRADOR ===");
-			System.out.println("1. Gerenciar Horários");
-			System.out.println("2. Gerenciar Aparelhos");
-			System.out.println("3. Dados da academia");
-			System.out.println("4. Alterar Dados da Academia");
-			System.out.println("5. EXCLUIR ACADEMIA ");
+			System.out.println("1. Dados da academia");
+			System.out.println("2. Gerenciar Academia");
+			System.out.println("3. Gerenciar Horários");
+			System.out.println("4. Gerenciar Aparelhos");
+			System.out.println("5. Cadastrar usuários");
 			System.out.println("6. Horários de Funcionamento");
 			System.out.println("7. Consultar Aparelhos");
 			System.out.println("8. Consultar Alunos");
 			System.out.println("9. Sair (Logout)");
-
+			
 			System.out.print("Escolha uma opção: ");
 			int opcao = scanner.nextInt();
 			scanner.nextLine();
 
 			switch (opcao) {
-			case 1: gerenciarHorarios(admin);
+			case 1: consultarAcademia(admin);
 				break;
-			case 2: gerenciarAparelhos(admin);
+			case 2: gerenciarAcademia(admin);
 				break;
-			case 3: consultarAcademia(admin);
+			case 3: gerenciarHorarios(admin);
 				break;
-			case 4: alterarAcademia(admin);
+			case 4: gerenciarAparelhos(admin);
 				break;
-			case 5: removerAcademia(admin);
+			case 5: cadastrarUsuario(admin);
 				break;
 			case 6: listarHorarios();
 				break;
@@ -227,6 +194,71 @@ public class Principal {
 			}
 		}
 	}
+	
+	/*private static void gerenciarInstrutores(Pessoa usuario) {
+		if (!(usuario instanceof Administrador)) {
+			System.out.println("Acesso negado. Apenas administradores podem gerenciar instrutores.");
+			return;
+		}
+
+		boolean gerenciando = true;
+		while (gerenciando) {
+			System.out.println("\n    GERENCIAR INSTRUTORES    ");
+			System.out.println("1. Adicionar instrutor");
+			System.out.println("2. Alterar instrutor");
+			System.out.println("3. Remover instrutor");
+			System.out.println("4. Voltar");
+
+			System.out.print("Escolha uma opção: ");
+			int opcao = Integer.parseInt(scanner.nextLine());
+
+			switch (opcao) {
+			case 1: adicionarInstrutor(usuario);
+				break;
+			case 2: alterarInstrutor(usuario);
+				break;
+			case 3: removerInstrutor(usuario);
+				break;
+			case 4: gerenciando = false;
+				break;
+			default: System.out.println("Opção inválida.");
+			}
+		}
+	}*/
+
+	private static void gerenciarAcademia(Administrador admin) {
+		if (admin.isAdministrador()) {
+			boolean voltar = false;
+			while (!voltar) {
+				System.out.println("\n GERENCIAR ACADEMIA");
+				System.out.println("1. Alterar dados da Academia");
+				System.out.println("2. Excluir academia");
+				System.out.println("3. Voltar");
+				
+				System.out.print("Escolha uma opção: ");
+				int opcao = scanner.nextInt();
+				scanner.nextLine();
+				
+				switch (opcao) {
+				case 1:
+					alterarAcademia(admin);
+					break;
+				case 2:
+					removerAcademia(admin);
+					break;
+				case 3:
+					voltar = true;
+					break;
+				default: {
+					System.out.println("Opção inválida. Tente novamente.");
+					voltar = true;
+					}
+				}
+			}
+		} else {
+			throw new RuntimeException("Acesso negado. Apenas administradores podem gerenciar os dados da academia.");
+		}
+	}
 
 	private static void menuInstrutor(Instrutor instrutor) {
 		System.out.println("Tipo de usuário: Instrutor");
@@ -239,7 +271,8 @@ public class Principal {
 			System.out.println("4. Listar Horários");
 			System.out.println("5. Consultar Aparelho");
 			System.out.println("6. Gerenciar evolução de alunos");
-			System.out.println("7. Sair (Logout)");
+			System.out.println("7. Cadastrar alunos");
+			System.out.println("8. Sair (Logout)");
 
 			System.out.print("Escolha uma opção: ");
 			int opcao = scanner.nextInt();
@@ -258,7 +291,9 @@ public class Principal {
 				break;
 			case 6: gerenciarEvolucaoAluno(instrutor);
 				break;
-			case 7: {
+			case 7: cadastrarUsuario(instrutor);
+				break;
+			case 8: {
 					logado = false;
 					academia.logout();
 					System.out.println("Logout realizado.");
@@ -308,15 +343,6 @@ public class Principal {
 				break;
 			default: System.out.println("Opção inválida.");
 			}
-		}
-	}
-
-	private static Date parseDate(String dataStr) {
-		try {
-			return new SimpleDateFormat("dd/mm/yyyy").parse(dataStr);
-		} catch (ParseException e) {
-			System.out.println("Data inválida. Usando data atual.");
-			return new Date();
 		}
 	}
 
