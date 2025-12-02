@@ -56,12 +56,7 @@ public class Principal {
 
     private static void inicializarAcademia() {
         System.out.println("---Cadastro da Academia---");
-        System.out.print("Login do administrador padrão: ");
-        String login = scanner.nextLine();
-
-        System.out.print("Senha do administrador padrão: ");
-        String senha = scanner.nextLine();
-        
+        // Inicializa academia com valores padrão
         inicializarAcademiaComValoresPadrao();
 //        System.out.print("Nome da academia: ");
 //        String nome = scanner.nextLine();
@@ -99,13 +94,27 @@ public class Principal {
 //        String estado = scanner.nextLine();
 
 //        Endereco endereco = new Endereco(idEndereco, logradouro, numero, complemento, bairro, cep, cidade, estado);
-        Pessoa admin = new Administrador(login, senha, true, 0, "Admin Padrão", "admin@academia.com", null, null);
-//
-//        academia = new Academia(login, senha, 1, nome, telefone, website, endereco, admin);
-//        Storage.addAcademia(academia);
+        // Cria administrador padrão e registra no storage
+        Pessoa admin = new Administrador("admin", "1234", true, 0, "Admin Padrão", "admin@academia.com", null, null);
         Storage.addPessoa(admin);
-        academia.login("admin", "1234");
-        
+
+        // Loop de login: solicita até acertar as credenciais
+        boolean autenticado = false;
+        while (!autenticado) {
+            System.out.print("Login do administrador: ");
+            String loginInput = scanner.nextLine();
+
+            System.out.print("Senha do administrador: ");
+            String senhaInput = scanner.nextLine();
+
+            try {
+                academia.login(loginInput, senhaInput);
+                autenticado = true;
+            } catch (RuntimeException e) {
+                System.out.println("Usuário não encontrado. Tente novamente.");
+            }
+        }
+
         preencherSistemaComDadosDeTeste();
         System.out.println("Academia cadastrada com sucesso.");
         
@@ -1250,7 +1259,17 @@ public class Principal {
         System.out.print("Dia da semana: \n1. Segunda\n2. Terça\n3. Quarta\n4. Quinta\n5. Sexta\n6. Sabado\n7. Domingo: ");
         int diaSemana = Integer.parseInt(scanner.nextLine());
 
-        int idTreino = aluno.getTreinos().size();
+        List<Treino> treinosExistentes = aluno.getTreinos();
+        try {
+            if (treinosExistentes != null && treinosExistentes.stream().anyMatch(t -> t.getDiaSemana() == diaSemana)) {
+                throw new IllegalStateException("Aluno já possui um treino cadastrado para este dia da semana.");
+            }
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        int idTreino = treinosExistentes.size();
         Treino treino = new Treino(idTreino, diaSemana, nomeTreino, aluno);
 
         boolean adicionando = true;
