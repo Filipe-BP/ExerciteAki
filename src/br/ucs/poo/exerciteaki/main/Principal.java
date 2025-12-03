@@ -35,6 +35,7 @@ import br.ucs.poo.exerciteaki.utils.Utils;
 
 public class Principal {
 
+	private static final int MAX_NUM_REPETICOES = 30;
 	private static Scanner scanner = new Scanner(System.in);
 	private static int contadorId = 1;
 	private static Academia academia;
@@ -1559,7 +1560,7 @@ public class Principal {
 				System.out.print("Número de Repetições: ");
 				Integer repeticoes = Integer.parseInt(scanner.nextLine());
 				
-				if (repeticoes > 30) {
+				if (repeticoes > MAX_NUM_REPETICOES) {
 					System.out.println("Número de repetições (" + repeticoes + ") excessivo.");
 					continue;
 				}
@@ -1593,18 +1594,19 @@ public class Principal {
 		} else {
 			System.out.println("Carga mantida.");
 		}
-
-		System.out.print("Novo Número de Repetições: ");
-		String inputReps = scanner.nextLine();
-		if (!inputReps.trim().isEmpty()) {
-			try {
-				exercicio.setNumeroRepeticoes(Integer.parseInt(inputReps));
-				System.out.println("Repetições alteradas com sucesso.");
-			} catch (NumberFormatException e) {
-				System.out.println("Repetições inválidas. Valor anterior mantido.");
+		
+		try {
+			System.out.print("Novo Número de Repetições: ");
+			int inputReps = Integer.parseInt(scanner.nextLine());
+			
+			if (inputReps > MAX_NUM_REPETICOES) {
+				System.out.println("Número de repetições (" + inputReps + ") excessivo.");
+				return;
 			}
-		} else {
-			System.out.println("Repetições mantidas.");
+			exercicio.setNumeroRepeticoes(inputReps);
+			System.out.println("Repetições alteradas com sucesso.");
+		} catch (NumberFormatException e) {
+			System.out.println("Repetições inválidas. Valor anterior mantido.");
 		}
 
 	}
@@ -1751,7 +1753,7 @@ public class Principal {
 			System.out.print("Repetições: ");
 			int repeticoes = Integer.parseInt(scanner.nextLine());
 			
-			if (repeticoes > 30) {
+			if (repeticoes > MAX_NUM_REPETICOES) {
 				System.out.println("Número de repetições (" + repeticoes + ") excessivo.");
 				continue;
 			}
