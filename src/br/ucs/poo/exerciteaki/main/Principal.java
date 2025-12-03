@@ -2029,7 +2029,7 @@ public class Principal {
 
 		System.out.println("\n=== CONSULTAR TREINO DO DIA ===");
 		for (int i = 0; i < diasSemana.length; i++) {
-			System.out.println(i + " - " + diasSemana[i]);
+			System.out.println((i + 1) + " - " + diasSemana[i]);
 		}
 
 		System.out.print("Escolha o índice do dia da semana: ");
@@ -2041,7 +2041,7 @@ public class Principal {
 			return;
 		}
 
-		if (idxDia < 0 || idxDia >= diasSemana.length) {
+		if (idxDia < 1 || idxDia > diasSemana.length) {
 			System.out.println("Índice inválido.");
 			return;
 		}
@@ -2054,11 +2054,11 @@ public class Principal {
 		}
 
 		if (treinosDoDia.isEmpty()) {
-			System.out.println("Nenhum treino encontrado para " + diasSemana[idxDia]);
+			System.out.println("Nenhum treino encontrado para " + diasSemana[idxDia - 1]);
 			return;
 		}
 
-		System.out.println("\n=== TREINOS DISPONÍVEIS NA " + diasSemana[idxDia].toUpperCase() + " ===");
+		System.out.println("\n=== TREINOS DISPONÍVEIS NA " + diasSemana[idxDia - 1].toUpperCase() + " ===");
 		for (int i = 0; i < treinosDoDia.size(); i++) {
 			Treino t = treinosDoDia.get(i);
 			System.out.println(i + " - " + t.getNome());
@@ -2081,11 +2081,11 @@ public class Principal {
 		Treino treinoSelecionado = treinosDoDia.get(idxTreino);
 
 		try (BufferedWriter writer = new BufferedWriter(
-				new FileWriter("treino_" + aluno.getNome() + "_" + diasSemana[idxDia] + ".txt"))) {
+				new FileWriter("treino_" + aluno.getNome() + "_" + diasSemana[idxDia - 1] + ".txt"))) {
 
 			writer.write("Treino do dia - Aluno: " + aluno.getNome());
 			writer.newLine();
-			writer.write("Dia da semana: " + diasSemana[treinoSelecionado.getDiaSemana()]);
+			writer.write("Dia da semana: " + diasSemana[treinoSelecionado.getDiaSemana() - 1]);
 			writer.newLine();
 			writer.write("Nome do treino: " + treinoSelecionado.getNome());
 			writer.newLine();

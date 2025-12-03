@@ -300,6 +300,19 @@ public class Academia implements Serializable {
 				atual.setDescricao(novoAparelho.getDescricao());
 				atual.setFuncao(novoAparelho.getFuncao());
 				atual.setAcademia(novoAparelho.getAcademia());
+				// Propaga alterações para exercícios existentes que referenciam este aparelho
+				int aparelhoId = atual.getId();
+				for (Aluno aluno : alunos) {
+					if (aluno == null || aluno.getTreinos() == null) continue;
+					for (Treino treino : aluno.getTreinos()) {
+						if (treino == null || treino.getExercicios() == null) continue;
+						for (Exercicio ex : treino.getExercicios()) {
+							if (ex != null && ex.getAparelho() != null && ex.getAparelho().getId() == aparelhoId) {
+								ex.setAparelho(atual);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -307,8 +320,20 @@ public class Academia implements Serializable {
 	public void alterarAparelhoPorId(int id, Aparelho novoAparelho) {
 	    for (int i = 0; i < aparelhos.size(); i++) {
 	        if (aparelhos.get(i).getId() == id) {
-	            aparelhos.set(i, novoAparelho);
+				aparelhos.set(i, novoAparelho);
 	            System.out.println("Aparelho com ID " + id + " alterado com sucesso.");
+				// Propaga novo aparelho para todos exercícios que usam este ID
+				for (Aluno aluno : alunos) {
+					if (aluno == null || aluno.getTreinos() == null) continue;
+					for (Treino treino : aluno.getTreinos()) {
+						if (treino == null || treino.getExercicios() == null) continue;
+						for (Exercicio ex : treino.getExercicios()) {
+							if (ex != null && ex.getAparelho() != null && ex.getAparelho().getId() == id) {
+								ex.setAparelho(novoAparelho);
+							}
+						}
+					}
+				}
 	            return;
 	        }
 	    }
